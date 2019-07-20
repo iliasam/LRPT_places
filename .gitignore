@@ -1,0 +1,5 @@
+*.o
+*.cout
+/Debug
+lrpt_places1/bin/
+lrpt_places1/obj/
