@@ -34,7 +34,7 @@ namespace lrpt_places1
 			int files_cnt = dirs.Length;
 			int i;
 			
-			for (i=0;i<files_cnt;i++)
+			for (i=0; i < files_cnt; i++)
 			{
 				cur_filename = Path.GetFileName(dirs[i]);
 				cur_filepath = dirs[i];
@@ -44,7 +44,7 @@ namespace lrpt_places1
 				}
 				else
 				{
-					//this file shold be analysed and renamed
+					//this file should be analysed and renamed
 					new_filename = analyse_file(cur_filepath);
 					new_filepath = archive_path + @"\" + new_filename;
 					System.IO.File.Move(cur_filepath, new_filepath);
@@ -78,7 +78,6 @@ namespace lrpt_places1
 						tle1 = new Tle(line, tle_line1, tle_line2);
 						str_epoch = tle1.Epoch;
 						str_epoch = remove_fraction(str_epoch);
-						//int_epoch = Convert.ToInt32(str_epoch);
 						new_filename = "archive_"+ str_epoch+ ".txt";
 						sr.Close();
 						return new_filename;
@@ -86,23 +85,37 @@ namespace lrpt_places1
 				}
 				if (line.Contains("METEOR"))
 				{
-					if (meteor_code == 2)
-					{
-						if (line.Contains("M2") || line.Contains("M 2"))
-						{
-							tle_line1 = sr.ReadLine();
-							tle_line2 = sr.ReadLine();
-							tle1 = new Tle(line, tle_line1, tle_line2);
-							str_epoch = tle1.Epoch;
-							str_epoch = remove_fraction(str_epoch);
-							//int_epoch = Convert.ToInt32(str_epoch);
-							new_filename = "archive_"+ str_epoch+ ".txt";
-							sr.Close();
-							return new_filename;
-						}
-					}
+                    if (meteor_code == 2)
+                    {
+                        if (line.Contains("M2") || line.Contains("M 2"))
+                        {
+                            tle_line1 = sr.ReadLine();
+                            tle_line2 = sr.ReadLine();
+                            tle1 = new Tle(line, tle_line1, tle_line2);
+                            str_epoch = tle1.Epoch;
+                            str_epoch = remove_fraction(str_epoch);
+                            new_filename = "archive_" + str_epoch + ".txt";
+                            sr.Close();
+                            return new_filename;
+                        }
+                    }
+                    else if (meteor_code == 22)
+                    {
+                        if (line.Contains("M2 2"))
+                        {
+                            tle_line1 = sr.ReadLine();
+                            tle_line2 = sr.ReadLine();
+                            tle1 = new Tle(line, tle_line1, tle_line2);
+                            str_epoch = tle1.Epoch;
+                            str_epoch = remove_fraction(str_epoch);
+                            new_filename = "archive_" + str_epoch + ".txt";
+                            sr.Close();
+                            return new_filename;
+                        }
+                    }
 
-				}
+
+                }
             }
 			//meteor not found
 			
@@ -226,7 +239,18 @@ namespace lrpt_places1
 							return tle1;
 						}
 					}
-				}
+                    else if (meteor_code == 22)
+                    {
+                        if (line.Contains("M2 2"))
+                        {
+                            tle_line1 = sr.ReadLine();
+                            tle_line2 = sr.ReadLine();
+                            tle1 = new Tle(line, tle_line1, tle_line2);
+                            sr.Close();
+                            return tle1;
+                        }
+                    }
+                }//meteor
 			}
 			
 			sr.Close();

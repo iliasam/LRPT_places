@@ -54,8 +54,17 @@ namespace lrpt_places1
          	textBox1.Text = "11:15:16.572\r\n00:13:38.708";
          	
          	cur_satellite_calc = new Satellite_pos_calc();
-         	
-         	cur_kml_worker.load_KML(Application.StartupPath+@"\points1.kml");
+
+            string path = Application.StartupPath + @"\points1.kml";
+
+            if (File.Exists(path) == false)
+            {
+                MessageBox.Show("File 'points1.kml' doesn't exist! \r\n Place it near App exe file.", "ERROR!", 0, System.Windows.Forms.MessageBoxIcon.Stop);
+                this.Close();
+                return;
+            }
+
+            cur_kml_worker.load_KML(path);
          	
          	load_config_from_ini_file();
          	set_form_controlls();
@@ -103,13 +112,13 @@ namespace lrpt_places1
 			}
 			
 
-         	if ( (cur_image_worker.cur_image_height > 0))
+         	if ((cur_image_worker.cur_image_height > 0))
          	{
          		
          		label1.Text = "START";
          		Application.DoEvents();
 			
-         		cur_image_x_center = cur_image_worker.cur_image_width/2 - 1;
+         		cur_image_x_center = cur_image_worker.cur_image_width / 2 - 1;
 
          		cur_satellite_calc.calculate_satellite_positions(full_start_time,fight_duration,cur_image_worker.cur_image_height,use_table_time);
          		
@@ -308,11 +317,16 @@ namespace lrpt_places1
 		//обновит параметры программы
 		void update_program_param()
 		{
-			if (met_code_button1.Checked) meteor_code = 1;
-			else if (met_code_button2.Checked) meteor_code = 2;
+			if (met_code_button22.Checked)
+                meteor_code = 21;
+			else if (met_code_button2.Checked)
+                meteor_code = 2;
 			cur_tle_worker.set_meteor_code(meteor_code);
 			
-			if (checkBox2.Checked) draw_center_line = 1; else draw_center_line = 0;
+			if (checkBox2.Checked)
+                draw_center_line = 1;
+            else
+                draw_center_line = 0;
 			
 			mark_size = Convert.ToInt32(numericUpDown1.Value);//ширина креста
 		}
@@ -334,9 +348,6 @@ namespace lrpt_places1
 			}
 			label6.Text = "Full UTC Date and Time: " + full_start_time.ToString();
 			label7.Text = "Flight duration: " + fight_duration.ToString() +" s";
-			
-			
-			
 		}
 		
 		//load time from MANUAL input
