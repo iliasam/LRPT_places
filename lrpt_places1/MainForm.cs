@@ -28,8 +28,8 @@ namespace lrpt_places1
 		bool use_table_time = false;//true for log file
 		int image_vert_shift = 0;
 		int image_horizontal_shift = 0;
-		
-		int meteor_code = 2;
+
+        TLE_worker.SatelliteCode meteor_code = TLE_worker.SatelliteCode.METEOR_M2;
 		int draw_center_line = 0;
 		int mark_size = 20;
 		int font_size = 8;
@@ -91,8 +91,10 @@ namespace lrpt_places1
 			
 			
 			update_program_param();
+            update_full_time();
 
-			if (cur_tle_path.Length > 5)
+
+            if (cur_tle_path.Length > 5)
 			{
 				Tle cur_tle = cur_tle_worker.load_tle(cur_tle_path);
 				if (cur_tle == null)
@@ -133,7 +135,8 @@ namespace lrpt_places1
          		}
 
          		
-         		if (cur_satellite_calc.NtoS_fight == false) rotate_image = true;
+         		if (cur_satellite_calc.NtoS_fight == false)
+                    rotate_image = true;
          		
          		cur_image_worker.load_image(cur_image_worker.cur_image_path,rotate_image);//истинная загрузка изображения
          		
@@ -317,10 +320,10 @@ namespace lrpt_places1
 		//обновит параметры программы
 		void update_program_param()
 		{
-			if (met_code_button22.Checked)
-                meteor_code = 21;
+			if (chkMeteorM2_2.Checked)
+                meteor_code = TLE_worker.SatelliteCode.METEOR_M2_2;
 			else if (met_code_button2.Checked)
-                meteor_code = 2;
+                meteor_code = TLE_worker.SatelliteCode.METEOR_M2;
 			cur_tle_worker.set_meteor_code(meteor_code);
 			
 			if (checkBox2.Checked)
@@ -336,14 +339,19 @@ namespace lrpt_places1
 		
 		void update_full_time()
 		{
-			if (use_table_time)
+            bool is_utc_time = false;
+
+            if (chkMeteorM2_2.Checked)//meteor 2-2
+                is_utc_time = true;
+
+            if (use_table_time)
 			{
-				full_start_time = cur_time_proc.create_full_utc(start_date,cur_satellite_calc.table_start_time);
+				full_start_time = cur_time_proc.create_full_utc(start_date, cur_satellite_calc.table_start_time, is_utc_time);
 				fight_duration = cur_satellite_calc.table_fight_duration;
 			}
 			else
 			{
-				full_start_time = cur_time_proc.create_full_utc(start_date,start_time);
+				full_start_time = cur_time_proc.create_full_utc(start_date, start_time, is_utc_time);
 				fight_duration = cur_time_proc.flight_duration;
 			}
 			label6.Text = "Full UTC Date and Time: " + full_start_time.ToString();
@@ -469,7 +477,15 @@ namespace lrpt_places1
 			load_TLE_data();
 			button1.PerformClick();
 		}
-		
-				
-	}
+
+        private void Met_code_button2_CheckedChanged(object sender, EventArgs e)
+        {
+            update_full_time();
+        }
+
+        private void ChkMeteorM2_2_CheckedChanged(object sender, EventArgs e)
+        {
+            update_full_time();
+        }
+    }
 }

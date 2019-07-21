@@ -74,7 +74,7 @@ namespace lrpt_places1
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.met_code_button2 = new System.Windows.Forms.RadioButton();
-            this.met_code_button22 = new System.Windows.Forms.RadioButton();
+            this.chkMeteorM2_2 = new System.Windows.Forms.RadioButton();
             this.label9 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.button9 = new System.Windows.Forms.Button();
@@ -353,7 +353,7 @@ namespace lrpt_places1
             // groupBox2
             // 
             this.groupBox2.Controls.Add(this.met_code_button2);
-            this.groupBox2.Controls.Add(this.met_code_button22);
+            this.groupBox2.Controls.Add(this.chkMeteorM2_2);
             this.groupBox2.Location = new System.Drawing.Point(385, 20);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(131, 96);
@@ -371,15 +371,17 @@ namespace lrpt_places1
             this.met_code_button2.TabStop = true;
             this.met_code_button2.Text = "METEOR-M 2";
             this.met_code_button2.UseVisualStyleBackColor = true;
+            this.met_code_button2.CheckedChanged += new System.EventHandler(this.Met_code_button2_CheckedChanged);
             // 
-            // met_code_button22
+            // chkMeteorM2_2
             // 
-            this.met_code_button22.Location = new System.Drawing.Point(16, 54);
-            this.met_code_button22.Name = "met_code_button22";
-            this.met_code_button22.Size = new System.Drawing.Size(104, 24);
-            this.met_code_button22.TabIndex = 0;
-            this.met_code_button22.Text = "METEOR-M2.2";
-            this.met_code_button22.UseVisualStyleBackColor = true;
+            this.chkMeteorM2_2.Location = new System.Drawing.Point(16, 54);
+            this.chkMeteorM2_2.Name = "chkMeteorM2_2";
+            this.chkMeteorM2_2.Size = new System.Drawing.Size(104, 24);
+            this.chkMeteorM2_2.TabIndex = 0;
+            this.chkMeteorM2_2.Text = "METEOR-M2.2";
+            this.chkMeteorM2_2.UseVisualStyleBackColor = true;
+            this.chkMeteorM2_2.CheckedChanged += new System.EventHandler(this.ChkMeteorM2_2_CheckedChanged);
             // 
             // label9
             // 
@@ -532,7 +534,7 @@ namespace lrpt_places1
             this.Controls.Add(this.button1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
             this.Name = "MainForm";
-            this.Text = "lrpt_places_v1.07";
+            this.Text = "LRPT_places v1.08";
             this.groupBox3.ResumeLayout(false);
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
@@ -573,7 +575,7 @@ namespace lrpt_places1
 		private System.Windows.Forms.TabControl tabControl1;
 		private System.Windows.Forms.GroupBox groupBox2;
 		private System.Windows.Forms.RadioButton met_code_button2;
-		private System.Windows.Forms.RadioButton met_code_button22;
+		private System.Windows.Forms.RadioButton chkMeteorM2_2;
 		private System.Windows.Forms.Label label4;
 		private System.Windows.Forms.Label label14;
 		private System.Windows.Forms.Button button3;

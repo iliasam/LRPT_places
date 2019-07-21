@@ -6,9 +6,16 @@ namespace lrpt_places1
 {
 	public class TLE_worker
 	{
-		public int cur_min_diff = 10000;
-		public int meteor_code = 2;
-		
+        public enum SatelliteCode
+        {
+            METEOR_M1 = 1,
+            METEOR_M2,
+            METEOR_M2_2,
+        };
+
+        public int cur_min_diff = 10000;
+		public SatelliteCode meteor_code = SatelliteCode.METEOR_M2;
+
 		public TLE_worker()
 		{
 		}
@@ -16,7 +23,7 @@ namespace lrpt_places1
 		/// <summary>
 		/// Select Meteor's name to work with
 		/// </summary>
-		public void set_meteor_code(int code)
+		public void set_meteor_code(SatelliteCode code)
 		{
 			meteor_code = code;
 		}
@@ -47,8 +54,14 @@ namespace lrpt_places1
 					//this file should be analysed and renamed
 					new_filename = analyse_file(cur_filepath);
 					new_filepath = archive_path + @"\" + new_filename;
-					System.IO.File.Move(cur_filepath, new_filepath);
-				}
+
+                    // Такой файл уже есть в архиве, удаляем его
+                    if (File.Exists(new_filepath))
+                    {
+                        File.Delete(new_filepath);
+                    }
+                    System.IO.File.Move(cur_filepath, new_filepath);
+                }
 			}
 		}
 		
@@ -69,7 +82,7 @@ namespace lrpt_places1
 			
 			while ((line = sr.ReadLine()) != null)
             {
-				if (meteor_code == 1)
+				if (meteor_code == SatelliteCode.METEOR_M1)
 				{
 					if (line.Contains("M1") || line.Contains("M 1"))
 					{
@@ -85,7 +98,7 @@ namespace lrpt_places1
 				}
 				if (line.Contains("METEOR"))
 				{
-                    if (meteor_code == 2)
+                    if (meteor_code == SatelliteCode.METEOR_M2)
                     {
                         if (line.Contains("M2") || line.Contains("M 2"))
                         {
@@ -99,7 +112,7 @@ namespace lrpt_places1
                             return new_filename;
                         }
                     }
-                    else if (meteor_code == 22)
+                    else if (meteor_code == SatelliteCode.METEOR_M2_2)
                     {
                         if (line.Contains("M2 2"))
                         {
@@ -113,8 +126,6 @@ namespace lrpt_places1
                             return new_filename;
                         }
                     }
-
-
                 }
             }
 			//meteor not found
@@ -217,7 +228,7 @@ namespace lrpt_places1
             {
 				if (line.Contains("METEOR"))
 				{
-					if (meteor_code == 1)
+					if (meteor_code == SatelliteCode.METEOR_M1)
 					{
 						if (line.Contains("M1") || line.Contains("M 1"))
 						{
@@ -228,7 +239,7 @@ namespace lrpt_places1
 							return tle1;
 						}
 					}
-					else if (meteor_code == 2)
+					else if (meteor_code == SatelliteCode.METEOR_M2)
 					{
 						if (line.Contains("M2") || line.Contains("M 2"))
 						{
@@ -239,7 +250,7 @@ namespace lrpt_places1
 							return tle1;
 						}
 					}
-                    else if (meteor_code == 22)
+                    else if (meteor_code == SatelliteCode.METEOR_M2_2)
                     {
                         if (line.Contains("M2 2"))
                         {

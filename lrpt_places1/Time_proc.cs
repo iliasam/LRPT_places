@@ -46,18 +46,22 @@ namespace lrpt_places1
 		/// <summary>
 		/// Merge date and time values - 3 hours (msk)
 		/// </summary>
-		public DateTime create_full_utc(DateTime date, DateTime msk_time)
+		public DateTime create_full_utc(DateTime date, DateTime time, bool is_utc_time = false)
 		{
 			DateTime datetime_result = new DateTime(date.Year,
 			                                        date.Month,
 			                                        date.Day,
-			                                        msk_time.Hour,
-			                                        msk_time.Minute,
-			                                        msk_time.Second,
-			                                        msk_time.Millisecond);
+			                                        time.Hour,
+			                                        time.Minute,
+			                                        time.Second,
+			                                        time.Millisecond);
 			
-			if (datetime_result.Year < 2002) {return datetime_result;}//can not substruct from bad date
-			datetime_result = datetime_result.Subtract(new TimeSpan(3,0,0));//get utc time
+			if (datetime_result.Year < 2002)
+                return datetime_result;//can not substruct from bad date
+
+            if (is_utc_time == false)
+                datetime_result = datetime_result.Subtract(new TimeSpan(3,0,0));//get utc time
+
 			return datetime_result;
 			                                        
 			                                        
