@@ -23,7 +23,7 @@ namespace lrpt_places1
    /// <summary>
    /// Satellitte position calculator
    /// </summary>
-	public class Satellite_pos_calc
+	public class SatellitePosCalcClass
 	{
 		public Tle current_tle;
 		
@@ -43,7 +43,7 @@ namespace lrpt_places1
 		/// Initialise Satellite position calculator
 		/// </summary>
 		/// 
-		public Satellite_pos_calc()
+		public SatellitePosCalcClass()
 		{
 		}
 		

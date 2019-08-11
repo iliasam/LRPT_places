@@ -10,11 +10,11 @@ namespace lrpt_places1
 {
 	public partial class MainForm : Form
 	{
-		Satellite_pos_calc cur_satellite_calc;
-		image_worker cur_image_worker;
-		Time_proc cur_time_proc;
-		TLE_worker cur_tle_worker;
-		KML_worker cur_kml_worker;
+		SatellitePosCalcClass CurSatelliteCalc;
+		ImageWorkerClass CurImageWorker;
+		TimeProcClass CurTimeProc;
+		TLEWorkerClass TLEWorker;
+		KMLWorkerClass KMLWorker;
 		
 		string cur_tle_path = "";
 		string image_path = "";
@@ -29,7 +29,7 @@ namespace lrpt_places1
 		int image_vert_shift = 0;
 		int image_horizontal_shift = 0;
 
-        TLE_worker.SatelliteCode meteor_code = TLE_worker.SatelliteCode.METEOR_M2;
+        TLEWorkerClass.SatelliteCode meteor_code = TLEWorkerClass.SatelliteCode.METEOR_M2;
 		int draw_center_line = 0;
 		int mark_size = 20;
 		int font_size = 8;
@@ -39,21 +39,24 @@ namespace lrpt_places1
 		public MainForm()
 		{
 			InitializeComponent();
-			cur_image_worker = new image_worker();
-			cur_time_proc = new Time_proc();
-			cur_tle_worker = new TLE_worker();
-			cur_kml_worker = new KML_worker();
+			CurImageWorker = new ImageWorkerClass();
+			CurTimeProc = new TimeProcClass();
+			TLEWorker = new TLEWorkerClass();
+			KMLWorker = new KMLWorkerClass();
 			
 			full_start_time = new DateTime(1,1,1,0,0,0,0);
 			start_time = new DateTime(1,1,1,0,0,0,0);
 			start_date = new DateTime(2015,02,14,11,15,0,0);
-			
-			string archive_path = Application.StartupPath + @"\Archive";
-			cur_tle_worker.scan_archive_and_rename(archive_path);
-			  	
-         	textBox1.Text = "11:15:16.572\r\n00:13:38.708";
+
+            load_config_from_ini_file();
+
+            string archive_path = Application.StartupPath + @"\Archive";
+			TLEWorker.scan_archive_and_rename(archive_path);
+            TLEWorker.CleanArchive(archive_path);
+
+            textBox1.Text = "11:15:16.572\r\n00:13:38.708";
          	
-         	cur_satellite_calc = new Satellite_pos_calc();
+         	CurSatelliteCalc = new SatellitePosCalcClass();
 
             string path = Application.StartupPath + @"\points1.kml";
 
@@ -64,9 +67,9 @@ namespace lrpt_places1
                 return;
             }
 
-            cur_kml_worker.load_KML(path);
+            KMLWorker.load_KML(path);
          	
-         	load_config_from_ini_file();
+         	
          	set_form_controlls();
 
 		}
@@ -81,7 +84,7 @@ namespace lrpt_places1
 			bool rotate_image = false;
 			
 			
-			if (cur_image_worker.image_loaded == false)
+			if (CurImageWorker.image_loaded == false)
 			{
 				load_image(image_path);
 			}
@@ -96,7 +99,7 @@ namespace lrpt_places1
 
             if (cur_tle_path.Length > 5)
 			{
-				Tle cur_tle = cur_tle_worker.load_tle(cur_tle_path);
+				Tle cur_tle = TLEWorker.load_tle(cur_tle_path);
 				if (cur_tle == null)
 				{
 					MessageBox.Show("Problem with loading TLE info.","ERROR!",0,System.Windows.Forms.MessageBoxIcon.Stop);
@@ -104,7 +107,7 @@ namespace lrpt_places1
 				}
 				else
 				{
-					cur_satellite_calc.load_tle(cur_tle);
+					CurSatelliteCalc.load_tle(cur_tle);
 				}
 			}
 			else 
@@ -114,20 +117,23 @@ namespace lrpt_places1
 			}
 			
 
-         	if ((cur_image_worker.cur_image_height > 0))
+         	if ((CurImageWorker.cur_image_height > 0))
          	{
          		
          		label1.Text = "START";
          		Application.DoEvents();
 			
-         		cur_image_x_center = cur_image_worker.cur_image_width / 2 - 1;
+         		cur_image_x_center = CurImageWorker.cur_image_width / 2 - 1;
 
-         		cur_satellite_calc.calculate_satellite_positions(full_start_time,fight_duration,cur_image_worker.cur_image_height,use_table_time);
-         		
+         		CurSatelliteCalc.calculate_satellite_positions(
+                    full_start_time, 
+                    fight_duration, 
+                    CurImageWorker.cur_image_height, 
+                    use_table_time);
          		
          		if (checkBox1.Checked)//auto horizontal correction
          		{
-         			if (cur_satellite_calc.NtoS_fight) {image_horizontal_shift = -30;}
+         			if (CurSatelliteCalc.NtoS_fight) {image_horizontal_shift = -30;}
          			else 
          			{
          				image_horizontal_shift = 30;
@@ -135,18 +141,19 @@ namespace lrpt_places1
          		}
 
          		
-         		if (cur_satellite_calc.NtoS_fight == false)
+         		if (CurSatelliteCalc.NtoS_fight == false)
                     rotate_image = true;
          		
-         		cur_image_worker.load_image(cur_image_worker.cur_image_path,rotate_image);//истинная загрузка изображения
+         		CurImageWorker.load_image(CurImageWorker.cur_image_path,rotate_image);//истинная загрузка изображения
          		
-         		if (checkBox2.Checked) cur_image_worker.image_draw_center_line(1);
+         		if (chkShowCenterLine.Checked)
+                    CurImageWorker.image_draw_center_line(1);
          		
-         		for (i=0;i<cur_kml_worker.geo_points_cnt;i++)
+         		for (i=0; i < KMLWorker.geo_points_cnt; i++)
          		{
-         			latitude = cur_kml_worker.geo_points[i].Latitude;
-         			longitude = cur_kml_worker.geo_points[i].Longitude;
-         			point_name = cur_kml_worker.geo_points[i].Name;
+         			latitude = KMLWorker.geo_points[i].Latitude;
+         			longitude = KMLWorker.geo_points[i].Longitude;
+         			point_name = KMLWorker.geo_points[i].Name;
          			
          			
          			//if (point_name == "Мекорьюк")
@@ -157,7 +164,7 @@ namespace lrpt_places1
          			draw_pos(latitude, longitude,point_name);
          		}
          		
-			    cur_image_worker.save_image();
+			    CurImageWorker.save_image();
 			    label1.Text = "DONE";
          	}
 		}
@@ -171,35 +178,35 @@ namespace lrpt_places1
 			int x_shift = 0;
 			
 			
-			best_line = cur_satellite_calc.find_best_line2(latitude,longitude);
+			best_line = CurSatelliteCalc.find_best_line2(latitude,longitude);
 			x_shift = calculate_x_shift_pos(best_line, latitude,longitude);
 			
 			//int y_shift = Convert.ToInt32(Math.Sin(0.0698)*x_shift);
 			int y_shift = Convert.ToInt32(Math.Sin(0.07)*x_shift);
 			
-			if (cur_satellite_calc.NtoS_fight == false)//flight "up"
+			if (CurSatelliteCalc.NtoS_fight == false)//flight "up"
 			{
 				//y_shift = y_shift * (-1);
 				y_shift = y_shift;
 				x_shift = x_shift * (-1);
 			}
 			
-			if (cur_image_worker.image_type == 1)
+			if (CurImageWorker.image_type == 1)
 			{
 				x_shift = Convert.ToInt32(Math.Tan(Math.PI/2 * (double)x_shift / 1102)*711);
 			}
 			x_pose = x_shift + cur_image_x_center;
 			y_pose = best_line+y_shift+image_vert_shift;
 			
-			if (cur_satellite_calc.NtoS_fight == false)//flight "up"
+			if (CurSatelliteCalc.NtoS_fight == false)//flight "up"
 			{
-				x_pose = cur_image_worker.cur_image_width - x_pose;
-				y_pose = cur_image_worker.cur_image_height - y_pose;
+				x_pose = CurImageWorker.cur_image_width - x_pose;
+				y_pose = CurImageWorker.cur_image_height - y_pose;
 			}
-			cur_image_worker.image_draw_cross(x_pose,y_pose,mark_size,2,html_cross_color);
+			CurImageWorker.image_draw_cross(x_pose,y_pose,mark_size,2,html_cross_color);
 			//center cross
-			if (draw_center_line == 1) cur_image_worker.image_draw_cross(cur_image_x_center,best_line+image_vert_shift,mark_size/2,1,html_cross_color);
-			cur_image_worker.image_draw_text(x_pose+(mark_size/2)+3,y_pose-6,name,html_text_color,font_size);
+			if (draw_center_line == 1) CurImageWorker.image_draw_cross(cur_image_x_center,best_line+image_vert_shift,mark_size/2,1,html_cross_color);
+			CurImageWorker.image_draw_text(x_pose+(mark_size/2)+3,y_pose-6,name,html_text_color,font_size);
 		}
 				
 		//load image
@@ -219,24 +226,21 @@ namespace lrpt_places1
 			{
 				MessageBox.Show("Impossible to open file." ,"ERROR!",0,System.Windows.Forms.MessageBoxIcon.Stop);
 			}
-			
 		}
 		
 
 		void load_image(string path)
 		{
 			//cur_image_worker.load_image(path);
-			cur_image_worker.pre_load_image(path);
-			label2.Text = "Image width: " + cur_image_worker.cur_image_width.ToString();
-			label3.Text = "Image height: " + cur_image_worker.cur_image_height.ToString();
+			CurImageWorker.pre_load_image(path);
+			label2.Text = "Image width: " + CurImageWorker.cur_image_width.ToString();
+			label3.Text = "Image height: " + CurImageWorker.cur_image_height.ToString();
 		
 			
-			label5.Text = "Image date: " + cur_image_worker.fileCreatedDate.ToShortDateString();
-			label13.Text = "Image type: " + cur_image_worker.image_type_string;
-			label15.Text = "Image name: " + cur_image_worker.cur_image_name;
+			label5.Text = "Image date: " + CurImageWorker.fileCreatedDate.ToShortDateString();
+			label13.Text = "Image type: " + CurImageWorker.image_type_string;
+			label15.Text = "Image name: " + CurImageWorker.cur_image_name;
 		}
-		
-
 		
 		//take date from calendar
 		void Button4Click(object sender, EventArgs e)
@@ -248,15 +252,15 @@ namespace lrpt_places1
 		//take date from image
 		void Button5Click(object sender, EventArgs e)
 		{
-			start_date = cur_image_worker.fileCreatedDate;
+			start_date = CurImageWorker.fileCreatedDate;
 			update_full_time();
 			label4.Text = "Image date present";
 		}
 		
 		int calculate_x_shift_pos(int line, double latitude, double longitude)
 		{
-			Sat_geo_pos sat_pose = cur_satellite_calc.image_positions[line];
-			double dist = cur_satellite_calc.find_2points_distance(sat_pose.Latitude,sat_pose.Longitude, latitude, longitude);//km
+			Sat_geo_pos sat_pose = CurSatelliteCalc.image_positions[line];
+			double dist = CurSatelliteCalc.find_2points_distance(sat_pose.Latitude,sat_pose.Longitude, latitude, longitude);//km
 
 			double angle_rad = calculate_arc_angle(dist,sat_pose.Altitude);
 			double pixel_offset_d = angle_rad/0.001225;//0.0012 - angular resolution of METEOR M2 //THIS IS WRONG, but working???
@@ -290,7 +294,6 @@ namespace lrpt_places1
 			}
 			else pixel_offset_d = 100000;//не будет отображено
 			
-			
 			/*
 			if (longitude < sat_pose.Longitude)//THIS IS BAD
 			{
@@ -299,8 +302,6 @@ namespace lrpt_places1
 			pixel_offset_d = pixel_offset_d + image_horizontal_shift;//shift
 			*/
 
-
-				
 			return Convert.ToInt32(pixel_offset_d);
 		}
 		
@@ -321,12 +322,12 @@ namespace lrpt_places1
 		void update_program_param()
 		{
 			if (chkMeteorM2_2.Checked)
-                meteor_code = TLE_worker.SatelliteCode.METEOR_M2_2;
+                meteor_code = TLEWorkerClass.SatelliteCode.METEOR_M2_2;
 			else if (met_code_button2.Checked)
-                meteor_code = TLE_worker.SatelliteCode.METEOR_M2;
-			cur_tle_worker.set_meteor_code(meteor_code);
+                meteor_code = TLEWorkerClass.SatelliteCode.METEOR_M2;
+			TLEWorker.set_meteor_code(meteor_code);
 			
-			if (checkBox2.Checked)
+			if (chkShowCenterLine.Checked)
                 draw_center_line = 1;
             else
                 draw_center_line = 0;
@@ -334,8 +335,6 @@ namespace lrpt_places1
 			mark_size = Convert.ToInt32(numericUpDown1.Value);//ширина креста
 		}
 		
-		
-
 		
 		void update_full_time()
 		{
@@ -346,13 +345,13 @@ namespace lrpt_places1
 
             if (use_table_time)
 			{
-				full_start_time = cur_time_proc.create_full_utc(start_date, cur_satellite_calc.table_start_time, is_utc_time);
-				fight_duration = cur_satellite_calc.table_fight_duration;
+				full_start_time = CurTimeProc.create_full_utc(start_date, CurSatelliteCalc.table_start_time, is_utc_time);
+				fight_duration = CurSatelliteCalc.table_fight_duration;
 			}
 			else
 			{
-				full_start_time = cur_time_proc.create_full_utc(start_date, start_time, is_utc_time);
-				fight_duration = cur_time_proc.flight_duration;
+				full_start_time = CurTimeProc.create_full_utc(start_date, start_time, is_utc_time);
+				fight_duration = CurTimeProc.flight_duration;
 			}
 			label6.Text = "Full UTC Date and Time: " + full_start_time.ToString();
 			label7.Text = "Flight duration: " + fight_duration.ToString() +" s";
@@ -361,12 +360,12 @@ namespace lrpt_places1
 		//load time from MANUAL input
 		void Button6Click(object sender, EventArgs e)
 		{
-			int result = cur_time_proc.fill_time_from_string(textBox1.Text);
+			int result = CurTimeProc.fill_time_from_string(textBox1.Text);
 			if (result != 1)
 			{
 				MessageBox.Show("Wrong time/duration data","ERROR!",0,System.Windows.Forms.MessageBoxIcon.Stop);
 			}
-			start_time = cur_time_proc.start_time;
+			start_time = CurTimeProc.start_time;
 			use_table_time = false;
 			update_full_time();
 		}
@@ -394,15 +393,14 @@ namespace lrpt_places1
 		{
 			StreamReader sr = new StreamReader(path);
 			string stat_str = sr.ReadToEnd();
-			int result = cur_time_proc.fill_time_from_string(stat_str);
+			int result = CurTimeProc.fill_time_from_string(stat_str);
 			if (result != 1)
 			{
 				MessageBox.Show("Wrong time/duration data","ERROR!",0,System.Windows.Forms.MessageBoxIcon.Stop);
 			}
-			start_time = cur_time_proc.start_time;
+			start_time = CurTimeProc.start_time;
 			sr.Close();
 			use_table_time = false;
-			
 		}
 		
 		void load_config_from_ini_file()
@@ -413,13 +411,16 @@ namespace lrpt_places1
 			draw_center_line = Convert.ToInt32(parser.GetSetting("GRAPHICS", "draw_center_line"));
 			html_cross_color = parser.GetSetting("GRAPHICS", "cross_color");
 			html_text_color =  parser.GetSetting("GRAPHICS", "text_color");
-		}
+
+            int archive_lenth_days = Convert.ToInt32(parser.GetSetting("TLE", "archive_length_days"));
+            TLEWorker.SetArchiveLength(archive_lenth_days);
+        }
 		
 		//загрузить в элемены формы значения
 		void set_form_controlls()
 		{
 			numericUpDown1.Value = mark_size;
-			if (draw_center_line == 0) checkBox2.Checked = false; else checkBox2.Checked = true;
+			if (draw_center_line == 0) chkShowCenterLine.Checked = false; else chkShowCenterLine.Checked = true;
 		}
 		
 		//load time from LOG file
@@ -431,7 +432,7 @@ namespace lrpt_places1
 			if(openFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
    			{
 				log_path = openFileDialog1.FileName;
-				cur_satellite_calc.load_time_table(log_path);
+				CurSatelliteCalc.load_time_table(log_path);
 				use_table_time = true;
 				label14.Text = "Image time present";
 				update_full_time();
@@ -445,11 +446,11 @@ namespace lrpt_places1
 		void load_TLE_data()
 		{
 			string archive_path = Application.StartupPath + @"\Archive";
-			string best_tle_path = cur_tle_worker.find_best_tle(archive_path,full_start_time);
+			string best_tle_path = TLEWorker.find_best_tle(archive_path,full_start_time);
 			string best_tle_filename = Path.GetFileName(best_tle_path);
 			cur_tle_path = best_tle_path;
 			label8.Text = "TLE name: " + best_tle_filename;
-			label9.Text = "TLE days difference: " + cur_tle_worker.cur_min_diff.ToString();
+			label9.Text = "TLE days difference: " + TLEWorker.cur_min_diff.ToString();
 		}
 		
 		//load TLE from archive
@@ -463,8 +464,8 @@ namespace lrpt_places1
 		//auto process
 		void Button3Click(object sender, EventArgs e)
 		{
-			start_date = cur_image_worker.fileCreatedDate;
-			string stat_path = cur_image_worker.cur_image_path + ".stat";
+			start_date = CurImageWorker.fileCreatedDate;
+			string stat_path = CurImageWorker.cur_image_path + ".stat";
 			
 			if (File.Exists(stat_path) == false)
 			{

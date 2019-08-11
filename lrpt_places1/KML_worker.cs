@@ -19,11 +19,11 @@ namespace lrpt_places1
 	/// <summary>
 	/// Read KML files whith GEO points
 	/// </summary>
-	public class KML_worker
+	public class KMLWorkerClass
 	{
 		public KML_geo_pos[] geo_points = new KML_geo_pos[500];
 		public int geo_points_cnt = 0;
-		public KML_worker()
+		public KMLWorkerClass()
 		{
 		}
 		

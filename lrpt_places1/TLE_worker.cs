@@ -4,7 +4,7 @@ using Zeptomoby.OrbitTools;
 
 namespace lrpt_places1
 {
-	public class TLE_worker
+	public class TLEWorkerClass
 	{
         public enum SatelliteCode
         {
@@ -15,8 +15,10 @@ namespace lrpt_places1
 
         public int cur_min_diff = 10000;
 		public SatelliteCode meteor_code = SatelliteCode.METEOR_M2;
+        int archive_lenth_days = 10000;//lenth of the archive in days
 
-		public TLE_worker()
+
+        public TLEWorkerClass()
 		{
 		}
 		
@@ -33,6 +35,11 @@ namespace lrpt_places1
 		/// </summary>
 		public void scan_archive_and_rename(string archive_path)
 		{
+            if (Directory.Exists(archive_path) == false)
+            {
+                Directory.CreateDirectory(archive_path);
+            }
+
 			string[] dirs = Directory.GetFiles(archive_path, "*.txt");
 			string cur_filename;
 			string cur_filepath;
@@ -147,20 +154,19 @@ namespace lrpt_places1
 			return new_text;
 		}
 		
-
 		/// <summary>
 		/// Find epoch value in string
 		/// </summary>
-		public int calc_epoch_day(string text)
+		public int GetEpochDay(string text)
 		{
 			int pos = text.IndexOf("_");
-			string new_text = text.Remove(0,pos+1);
-			new_text = new_text.Remove(new_text.Length-4,4);
+			string new_text = text.Remove(0, pos+1);
+			new_text = new_text.Remove(new_text.Length-4, 4);
 			
-			string year = new_text.Substring(0,2);
-			string day = new_text.Substring(2,3);
+			string year = new_text.Substring(0, 2);
+			string day = new_text.Substring(2, 3);
 			
-			return Convert.ToInt32(year)*365+Convert.ToInt32(day);
+			return Convert.ToInt32(year) * 365 + Convert.ToInt32(day);
 		}
 		
 		/// <summary>
@@ -190,7 +196,7 @@ namespace lrpt_places1
 				}
 				else
 				{
-					cur_epoch = calc_epoch_day(cur_filename);
+					cur_epoch = GetEpochDay(cur_filename);
 					if (Math.Abs(cur_epoch - image_epoch) < min_diff)
 					{
 						min_diff = Math.Abs(cur_epoch - image_epoch);
@@ -267,6 +273,48 @@ namespace lrpt_places1
 			sr.Close();
 			return null;
 		}
+
+        /// <summary>
+        /// Delete old files
+        /// </summary>
+        public void CleanArchive(string archive_path)
+        {
+            string[] dirs = Directory.GetFiles(archive_path, "*.txt");
+            string cur_filename;
+            int i;
+            int today_epoch = convert_date_to_epoch(DateTime.Now);
+            int files_cnt = dirs.Length;
+
+            for (i = 0; i < files_cnt; i++)
+            {
+                cur_filename = Path.GetFileName(dirs[i]);
+                if (cur_filename.Contains("skip"))
+                {
+                    //this file should be skipped
+                }
+                else
+                {
+                    int cur_file_epoch = GetEpochDay(cur_filename);
+                    int diff_days = today_epoch - cur_file_epoch;
+                    if (diff_days > archive_lenth_days)
+                    {
+                        try
+                        {
+                            File.Delete(dirs[i]);
+                        }
+                        catch (Exception)
+                        {
+                            throw;
+                        }
+                    }
+                }
+            }
+        }
+
+        public void SetArchiveLength(int length)
+        {
+            archive_lenth_days = length;
+        }
 		
 		
 	}//end class

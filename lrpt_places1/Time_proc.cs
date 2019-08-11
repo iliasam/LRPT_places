@@ -2,12 +2,12 @@
 
 namespace lrpt_places1
 {
-	public class Time_proc
+	public class TimeProcClass
 	{
 		public DateTime start_time;//msk time (time only)
 		public double flight_duration;//in seconds
 		
-		public Time_proc()
+		public TimeProcClass()
 		{
 			start_time = new DateTime(2000,1,1,0,0,0,0);
 			flight_duration = 0;

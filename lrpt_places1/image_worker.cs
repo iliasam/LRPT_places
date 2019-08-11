@@ -10,7 +10,7 @@ namespace lrpt_places1
    /// <summary>
    /// Working with BMP image
    /// </summary>
-	public class image_worker
+	public class ImageWorkerClass
 	{
 		Bitmap cur_image;
 		Graphics cur_graphics;
@@ -24,7 +24,7 @@ namespace lrpt_places1
 		public string image_type_string = "";
 		public string cur_image_name = "none";
 			
-		public image_worker()
+		public ImageWorkerClass()
 		{
 			cur_image_height = 0;
 			cur_image_width = 0;
