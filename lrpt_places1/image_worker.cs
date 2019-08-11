@@ -23,8 +23,8 @@ namespace lrpt_places1
 		public int image_type = 0;//0- raw, 1 - processor, smoothmet
 		public string image_type_string = "";
 		public string cur_image_name = "none";
-			
-		public ImageWorkerClass()
+
+        public ImageWorkerClass()
 		{
 			cur_image_height = 0;
 			cur_image_width = 0;
@@ -66,7 +66,7 @@ namespace lrpt_places1
 		/// <summary>
 		/// Load BMP image to memory
 		/// </summary>
-		public void load_image(string path,bool rotate)
+		public void load_image(string path, bool rotate)
 		{
 			if (cur_image != null) {cur_image.Dispose();}
 			if (cur_graphics != null) {cur_graphics.Dispose();}
@@ -112,8 +112,7 @@ namespace lrpt_places1
 			StringFormat drawFormat = new StringFormat();
 			System.Drawing.Color col = System.Drawing.ColorTranslator.FromHtml(html_color);
 			
-			//cur_graphics.DrawString(text,new Font("Arial", 8),new SolidBrush(Color.Yellow),x,y);
-			cur_graphics.DrawString(text,new Font("Arial", font_size),new SolidBrush(col),x,y);
+			cur_graphics.DrawString(text, new Font("Arial", font_size), new SolidBrush(col), x, y);
 		}
 		
 		/// <summary>
@@ -170,8 +169,7 @@ namespace lrpt_places1
 				//cur_image.Save(save_path);
 				cur_image.Save(save_path,ImageFormat.Bmp);
 			}
-			
-			//
+
 			System.Diagnostics.Debug.WriteLine("Image saved: " + save_path + "\n");
 			
 			cur_graphics.Dispose();

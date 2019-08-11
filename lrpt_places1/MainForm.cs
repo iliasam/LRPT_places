@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using Zeptomoby.OrbitTools;
-
+using System.Threading;
 
 namespace lrpt_places1
 {
@@ -35,8 +35,16 @@ namespace lrpt_places1
 		int font_size = 8;
 		string html_cross_color = "#000000";
 		string html_text_color  = "#000000";
-		
-		public MainForm()
+
+        //Horizontal shift used in auto mode
+        int AutoHorShiftMeteorM2 = 30;
+        int AutoHorShiftMeteorM2_2 = -4;
+
+        // Do not show not visible points
+        bool FilterNotVisible = true;
+
+
+        public MainForm()
 		{
 			InitializeComponent();
 			CurImageWorker = new ImageWorkerClass();
@@ -77,97 +85,124 @@ namespace lrpt_places1
 		//process image
 		void Button1Click(object sender, EventArgs e)
 		{
-			int i;
-			double latitude;
-			double longitude;
-			string point_name;
-			bool rotate_image = false;
-			
-			
-			if (CurImageWorker.image_loaded == false)
-			{
-				load_image(image_path);
-			}
-			
-			image_vert_shift = Convert.ToInt32(textBox2.Text);
-			image_horizontal_shift = Convert.ToInt32(textBox3.Text);
-			
-			
-			update_program_param();
+            //DrawMarkersTask();
+            Thread drawThread = new Thread(new ThreadStart(DrawMarkersTask));
+            drawThread.Start();
+        }
+
+        void DrawMarkersTask()
+        {
+            int i;
+            double latitude;
+            double longitude;
+            string point_name;
+            bool rotate_image = false;
+
+
+            if (CurImageWorker.image_loaded == false)
+            {
+                load_image(image_path);
+            }
+
+            image_vert_shift = Convert.ToInt32(textBox2.Text);
+            image_horizontal_shift = Convert.ToInt32(textBox3.Text);
+
+            update_program_param();
             update_full_time();
 
-
             if (cur_tle_path.Length > 5)
-			{
-				Tle cur_tle = TLEWorker.load_tle(cur_tle_path);
-				if (cur_tle == null)
-				{
-					MessageBox.Show("Problem with loading TLE info.","ERROR!",0,System.Windows.Forms.MessageBoxIcon.Stop);
-					return;
-				}
-				else
-				{
-					CurSatelliteCalc.load_tle(cur_tle);
-				}
-			}
-			else 
-			{
-				MessageBox.Show("Bad TLE path.","ERROR!",0,System.Windows.Forms.MessageBoxIcon.Stop);
-				return;
-			}
-			
+            {
+                Tle cur_tle = TLEWorker.load_tle(cur_tle_path);
+                if (cur_tle == null)
+                {
+                    MessageBox.Show("Problem with loading TLE info.", "ERROR!", 0, System.Windows.Forms.MessageBoxIcon.Stop);
+                    return;
+                }
+                else
+                {
+                    CurSatelliteCalc.load_tle(cur_tle);
+                }
+            }
+            else
+            {
+                MessageBox.Show("Bad TLE path.", "ERROR!", 0, System.Windows.Forms.MessageBoxIcon.Stop);
+                return;
+            }
 
-         	if ((CurImageWorker.cur_image_height > 0))
-         	{
-         		
-         		label1.Text = "START";
-         		Application.DoEvents();
-			
-         		cur_image_x_center = CurImageWorker.cur_image_width / 2 - 1;
+            if (CurImageWorker.cur_image_height <= 0)
+                return;
 
-         		CurSatelliteCalc.calculate_satellite_positions(
-                    full_start_time, 
-                    fight_duration, 
-                    CurImageWorker.cur_image_height, 
-                    use_table_time);
-         		
-         		if (checkBox1.Checked)//auto horizontal correction
-         		{
-         			if (CurSatelliteCalc.NtoS_fight) {image_horizontal_shift = -30;}
-         			else 
-         			{
-         				image_horizontal_shift = 30;
-         			}
-         		}
+            Invoke((MethodInvoker)delegate ()
+            {
+                label1.Text = "START";
+            });
+            
+            Application.DoEvents();
 
-         		
-         		if (CurSatelliteCalc.NtoS_fight == false)
-                    rotate_image = true;
-         		
-         		CurImageWorker.load_image(CurImageWorker.cur_image_path,rotate_image);//истинная загрузка изображения
-         		
-         		if (chkShowCenterLine.Checked)
-                    CurImageWorker.image_draw_center_line(1);
-         		
-         		for (i=0; i < KMLWorker.geo_points_cnt; i++)
-         		{
-         			latitude = KMLWorker.geo_points[i].Latitude;
-         			longitude = KMLWorker.geo_points[i].Longitude;
-         			point_name = KMLWorker.geo_points[i].Name;
-         			
-         			
-         			//if (point_name == "Мекорьюк")
-         			if (point_name == "Москва")
-         			{
-         				//point_name = "test";
-         			}
-         			draw_pos(latitude, longitude,point_name);
-         		}
-         		
-			    CurImageWorker.save_image();
-			    label1.Text = "DONE";
-         	}
-		}
+            cur_image_x_center = CurImageWorker.cur_image_width / 2 - 1;
+
+            CurSatelliteCalc.calculate_satellite_positions(
+               full_start_time,
+               fight_duration,
+               CurImageWorker.cur_image_height,
+               use_table_time);
+
+            if (chkAutoHorizShift.Checked)//auto horizontal correction
+            {
+                int horizShiftValue = 0;//shift in pixels
+                if (meteor_code == TLEWorkerClass.SatelliteCode.METEOR_M2)
+                    horizShiftValue = AutoHorShiftMeteorM2;
+                else if (meteor_code == TLEWorkerClass.SatelliteCode.METEOR_M2_2)
+                    horizShiftValue = AutoHorShiftMeteorM2_2;
+
+                if (CurSatelliteCalc.NtoS_fight)
+                    image_horizontal_shift = -horizShiftValue;
+                else
+                    image_horizontal_shift = horizShiftValue;
+            }
+
+            if (CurSatelliteCalc.NtoS_fight == false)
+                rotate_image = true;
+
+            CurImageWorker.load_image(CurImageWorker.cur_image_path, rotate_image);//истинная загрузка изображения
+
+            if (chkShowCenterLine.Checked)
+                CurImageWorker.image_draw_center_line(1);
+
+            int prev_percent = 0;
+            for (i = 0; i < KMLWorker.geo_points_cnt; i++)
+            {
+                int percent = i * 100 / KMLWorker.geo_points_cnt;
+
+                latitude = KMLWorker.geo_points[i].Latitude;
+                longitude = KMLWorker.geo_points[i].Longitude;
+                point_name = KMLWorker.geo_points[i].Name;
+
+                //if (point_name == "Мекорьюк")
+                if (point_name == "Москва")
+                {
+                    //point_name = "test";
+                }
+                draw_pos(latitude, longitude, point_name);
+
+                if (percent != prev_percent)//if percent value has changed
+                {
+                    Invoke((MethodInvoker)delegate ()
+                    {
+                        label1.Text = $"WORK: {percent} %";
+                    });
+                }
+                prev_percent = percent;
+            }
+
+            CurImageWorker.save_image();
+            //label1.Text = "DONE";
+
+            Invoke((MethodInvoker)delegate ()
+            {
+                label1.Text = "DONE";
+            });
+        }
 		
 		//draw geo point on image
 		void draw_pos(double latitude, double longitude, string name)
@@ -177,7 +212,6 @@ namespace lrpt_places1
 			int y_pose = 0;
 			int x_shift = 0;
 			
-			
 			best_line = CurSatelliteCalc.find_best_line2(latitude,longitude);
 			x_shift = calculate_x_shift_pos(best_line, latitude,longitude);
 			
@@ -186,7 +220,6 @@ namespace lrpt_places1
 			
 			if (CurSatelliteCalc.NtoS_fight == false)//flight "up"
 			{
-				//y_shift = y_shift * (-1);
 				y_shift = y_shift;
 				x_shift = x_shift * (-1);
 			}
@@ -203,9 +236,23 @@ namespace lrpt_places1
 				x_pose = CurImageWorker.cur_image_width - x_pose;
 				y_pose = CurImageWorker.cur_image_height - y_pose;
 			}
-			CurImageWorker.image_draw_cross(x_pose,y_pose,mark_size,2,html_cross_color);
+
+            // Revove marks that are outsides image
+            if (FilterNotVisible)
+            {
+                if (x_pose < -mark_size)
+                    return;
+
+                if (x_pose > (CurImageWorker.cur_image_width + mark_size / 2))
+                    return;
+            }
+
+			CurImageWorker.image_draw_cross(x_pose, y_pose, mark_size, 2, html_cross_color);
+
 			//center cross
-			if (draw_center_line == 1) CurImageWorker.image_draw_cross(cur_image_x_center,best_line+image_vert_shift,mark_size/2,1,html_cross_color);
+			if (draw_center_line == 1)
+                CurImageWorker.image_draw_cross(cur_image_x_center, best_line+image_vert_shift, mark_size/2, 1, html_cross_color);
+
 			CurImageWorker.image_draw_text(x_pose+(mark_size/2)+3,y_pose-6,name,html_text_color,font_size);
 		}
 				
@@ -412,8 +459,17 @@ namespace lrpt_places1
 			html_cross_color = parser.GetSetting("GRAPHICS", "cross_color");
 			html_text_color =  parser.GetSetting("GRAPHICS", "text_color");
 
+            int filter_not_vis = Convert.ToInt32(parser.GetSetting("GRAPHICS", "filter_not_visible"));
+            if (filter_not_vis == 1)
+                FilterNotVisible = true;
+            else
+                FilterNotVisible = false;
+
             int archive_lenth_days = Convert.ToInt32(parser.GetSetting("TLE", "archive_length_days"));
             TLEWorker.SetArchiveLength(archive_lenth_days);
+
+            AutoHorShiftMeteorM2 = Convert.ToInt32(parser.GetSetting("SHIFT", "meteor_m_2"));
+            AutoHorShiftMeteorM2_2 = Convert.ToInt32(parser.GetSetting("SHIFT", "meteor_m_2_2"));
         }
 		
 		//загрузить в элемены формы значения
@@ -465,13 +521,25 @@ namespace lrpt_places1
 		void Button3Click(object sender, EventArgs e)
 		{
 			start_date = CurImageWorker.fileCreatedDate;
-			string stat_path = CurImageWorker.cur_image_path + ".stat";
 			
-			if (File.Exists(stat_path) == false)
+            int path_lng = CurImageWorker.cur_image_path.Length;
+            string name_whithout_ext = CurImageWorker.cur_image_path.Remove(path_lng - 4, 4);
+
+            string stat_path1 = CurImageWorker.cur_image_path + ".stat";
+            string stat_path2 = name_whithout_ext + ".stat";
+
+            string stat_path = "";
+
+            if (File.Exists(stat_path1))
+                stat_path = stat_path1;
+            else if (File.Exists(stat_path2))
+                stat_path = stat_path2;
+            else
 			{
 				MessageBox.Show("Can not open STAT file near image!","ERROR!",0,System.Windows.Forms.MessageBoxIcon.Stop);
 				return;
 			}
+
 			update_time_from_stat_file(stat_path);
 			update_full_time();
 			

@@ -47,6 +47,7 @@ namespace lrpt_places1
 		/// </summary>
 		private void InitializeComponent()
 		{
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.button1 = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.button2 = new System.Windows.Forms.Button();
@@ -79,7 +80,7 @@ namespace lrpt_places1
             this.label8 = new System.Windows.Forms.Label();
             this.button9 = new System.Windows.Forms.Button();
             this.tabPage4 = new System.Windows.Forms.TabPage();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.chkAutoHorizShift = new System.Windows.Forms.CheckBox();
             this.textBox3 = new System.Windows.Forms.TextBox();
             this.label11 = new System.Windows.Forms.Label();
             this.textBox2 = new System.Windows.Forms.TextBox();
@@ -104,7 +105,7 @@ namespace lrpt_places1
             // 
             this.button1.Enabled = false;
             this.button1.Location = new System.Drawing.Point(19, 406);
-            this.button1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.button1.Margin = new System.Windows.Forms.Padding(4);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(177, 44);
             this.button1.TabIndex = 0;
@@ -124,7 +125,7 @@ namespace lrpt_places1
             // button2
             // 
             this.button2.Location = new System.Drawing.Point(40, 31);
-            this.button2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.button2.Margin = new System.Windows.Forms.Padding(4);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(99, 46);
             this.button2.TabIndex = 2;
@@ -165,9 +166,9 @@ namespace lrpt_places1
             this.groupBox3.Controls.Add(this.monthCalendar1);
             this.groupBox3.ForeColor = System.Drawing.SystemColors.WindowText;
             this.groupBox3.Location = new System.Drawing.Point(8, 7);
-            this.groupBox3.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox3.Margin = new System.Windows.Forms.Padding(4);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox3.Padding = new System.Windows.Forms.Padding(4);
             this.groupBox3.Size = new System.Drawing.Size(367, 262);
             this.groupBox3.TabIndex = 7;
             this.groupBox3.TabStop = false;
@@ -186,7 +187,7 @@ namespace lrpt_places1
             // 
             this.button5.Enabled = false;
             this.button5.Location = new System.Drawing.Point(251, 137);
-            this.button5.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.button5.Margin = new System.Windows.Forms.Padding(4);
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(100, 71);
             this.button5.TabIndex = 10;
@@ -197,7 +198,7 @@ namespace lrpt_places1
             // button4
             // 
             this.button4.Location = new System.Drawing.Point(251, 23);
-            this.button4.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.button4.Margin = new System.Windows.Forms.Padding(4);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(100, 71);
             this.button4.TabIndex = 9;
@@ -229,7 +230,7 @@ namespace lrpt_places1
             this.tabControl1.Controls.Add(this.tabPage3);
             this.tabControl1.Controls.Add(this.tabPage4);
             this.tabControl1.Location = new System.Drawing.Point(5, 5);
-            this.tabControl1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabControl1.Margin = new System.Windows.Forms.Padding(4);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
             this.tabControl1.Size = new System.Drawing.Size(759, 311);
@@ -244,9 +245,9 @@ namespace lrpt_places1
             this.tabPage1.Controls.Add(this.button2);
             this.tabPage1.Controls.Add(this.label2);
             this.tabPage1.Location = new System.Drawing.Point(4, 25);
-            this.tabPage1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabPage1.Margin = new System.Windows.Forms.Padding(4);
             this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(4);
             this.tabPage1.Size = new System.Drawing.Size(751, 282);
             this.tabPage1.TabIndex = 2;
             this.tabPage1.Text = "Image";
@@ -287,9 +288,9 @@ namespace lrpt_places1
             this.tabPage2.Controls.Add(this.groupBox1);
             this.tabPage2.Controls.Add(this.groupBox3);
             this.tabPage2.Location = new System.Drawing.Point(4, 25);
-            this.tabPage2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabPage2.Margin = new System.Windows.Forms.Padding(4);
             this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(4);
             this.tabPage2.Size = new System.Drawing.Size(751, 282);
             this.tabPage2.TabIndex = 3;
             this.tabPage2.Text = "Date and Time";
@@ -303,9 +304,9 @@ namespace lrpt_places1
             this.groupBox1.Controls.Add(this.button6);
             this.groupBox1.Controls.Add(this.textBox1);
             this.groupBox1.Location = new System.Drawing.Point(401, 7);
-            this.groupBox1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox1.Margin = new System.Windows.Forms.Padding(4);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox1.Padding = new System.Windows.Forms.Padding(4);
             this.groupBox1.Size = new System.Drawing.Size(319, 262);
             this.groupBox1.TabIndex = 8;
             this.groupBox1.TabStop = false;
@@ -323,7 +324,7 @@ namespace lrpt_places1
             // button8
             // 
             this.button8.Location = new System.Drawing.Point(203, 137);
-            this.button8.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.button8.Margin = new System.Windows.Forms.Padding(4);
             this.button8.Name = "button8";
             this.button8.Size = new System.Drawing.Size(100, 71);
             this.button8.TabIndex = 13;
@@ -334,7 +335,7 @@ namespace lrpt_places1
             // button7
             // 
             this.button7.Location = new System.Drawing.Point(23, 137);
-            this.button7.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.button7.Margin = new System.Windows.Forms.Padding(4);
             this.button7.Name = "button7";
             this.button7.Size = new System.Drawing.Size(116, 71);
             this.button7.TabIndex = 12;
@@ -345,7 +346,7 @@ namespace lrpt_places1
             // button6
             // 
             this.button6.Location = new System.Drawing.Point(203, 36);
-            this.button6.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.button6.Margin = new System.Windows.Forms.Padding(4);
             this.button6.Name = "button6";
             this.button6.Size = new System.Drawing.Size(100, 71);
             this.button6.TabIndex = 11;
@@ -356,7 +357,7 @@ namespace lrpt_places1
             // textBox1
             // 
             this.textBox1.Location = new System.Drawing.Point(23, 39);
-            this.textBox1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.textBox1.Margin = new System.Windows.Forms.Padding(4);
             this.textBox1.Multiline = true;
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(152, 67);
@@ -369,7 +370,7 @@ namespace lrpt_places1
             this.tabPage3.Controls.Add(this.label8);
             this.tabPage3.Controls.Add(this.button9);
             this.tabPage3.Location = new System.Drawing.Point(4, 25);
-            this.tabPage3.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabPage3.Margin = new System.Windows.Forms.Padding(4);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Size = new System.Drawing.Size(751, 282);
             this.tabPage3.TabIndex = 4;
@@ -381,9 +382,9 @@ namespace lrpt_places1
             this.groupBox2.Controls.Add(this.met_code_button2);
             this.groupBox2.Controls.Add(this.chkMeteorM2_2);
             this.groupBox2.Location = new System.Drawing.Point(513, 25);
-            this.groupBox2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox2.Margin = new System.Windows.Forms.Padding(4);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox2.Padding = new System.Windows.Forms.Padding(4);
             this.groupBox2.Size = new System.Drawing.Size(175, 118);
             this.groupBox2.TabIndex = 15;
             this.groupBox2.TabStop = false;
@@ -393,7 +394,7 @@ namespace lrpt_places1
             // 
             this.met_code_button2.Checked = true;
             this.met_code_button2.Location = new System.Drawing.Point(21, 30);
-            this.met_code_button2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.met_code_button2.Margin = new System.Windows.Forms.Padding(4);
             this.met_code_button2.Name = "met_code_button2";
             this.met_code_button2.Size = new System.Drawing.Size(139, 30);
             this.met_code_button2.TabIndex = 1;
@@ -405,7 +406,7 @@ namespace lrpt_places1
             // chkMeteorM2_2
             // 
             this.chkMeteorM2_2.Location = new System.Drawing.Point(21, 66);
-            this.chkMeteorM2_2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.chkMeteorM2_2.Margin = new System.Windows.Forms.Padding(4);
             this.chkMeteorM2_2.Name = "chkMeteorM2_2";
             this.chkMeteorM2_2.Size = new System.Drawing.Size(139, 30);
             this.chkMeteorM2_2.TabIndex = 0;
@@ -436,7 +437,7 @@ namespace lrpt_places1
             // button9
             // 
             this.button9.Location = new System.Drawing.Point(29, 38);
-            this.button9.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.button9.Margin = new System.Windows.Forms.Padding(4);
             this.button9.Name = "button9";
             this.button9.Size = new System.Drawing.Size(116, 63);
             this.button9.TabIndex = 0;
@@ -446,36 +447,36 @@ namespace lrpt_places1
             // 
             // tabPage4
             // 
-            this.tabPage4.Controls.Add(this.checkBox1);
+            this.tabPage4.Controls.Add(this.chkAutoHorizShift);
             this.tabPage4.Controls.Add(this.textBox3);
             this.tabPage4.Controls.Add(this.label11);
             this.tabPage4.Controls.Add(this.textBox2);
             this.tabPage4.Controls.Add(this.label10);
             this.tabPage4.Location = new System.Drawing.Point(4, 25);
-            this.tabPage4.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabPage4.Margin = new System.Windows.Forms.Padding(4);
             this.tabPage4.Name = "tabPage4";
-            this.tabPage4.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabPage4.Padding = new System.Windows.Forms.Padding(4);
             this.tabPage4.Size = new System.Drawing.Size(751, 282);
             this.tabPage4.TabIndex = 5;
             this.tabPage4.Text = "Correction";
             this.tabPage4.UseVisualStyleBackColor = true;
             // 
-            // checkBox1
+            // chkAutoHorizShift
             // 
-            this.checkBox1.Checked = true;
-            this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox1.Location = new System.Drawing.Point(245, 64);
-            this.checkBox1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(139, 30);
-            this.checkBox1.TabIndex = 4;
-            this.checkBox1.Text = "Auto";
-            this.checkBox1.UseVisualStyleBackColor = true;
+            this.chkAutoHorizShift.Checked = true;
+            this.chkAutoHorizShift.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkAutoHorizShift.Location = new System.Drawing.Point(245, 64);
+            this.chkAutoHorizShift.Margin = new System.Windows.Forms.Padding(4);
+            this.chkAutoHorizShift.Name = "chkAutoHorizShift";
+            this.chkAutoHorizShift.Size = new System.Drawing.Size(139, 30);
+            this.chkAutoHorizShift.TabIndex = 4;
+            this.chkAutoHorizShift.Text = "Auto";
+            this.chkAutoHorizShift.UseVisualStyleBackColor = true;
             // 
             // textBox3
             // 
             this.textBox3.Location = new System.Drawing.Point(141, 66);
-            this.textBox3.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.textBox3.Margin = new System.Windows.Forms.Padding(4);
             this.textBox3.Name = "textBox3";
             this.textBox3.Size = new System.Drawing.Size(81, 22);
             this.textBox3.TabIndex = 3;
@@ -493,7 +494,7 @@ namespace lrpt_places1
             // textBox2
             // 
             this.textBox2.Location = new System.Drawing.Point(141, 27);
-            this.textBox2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.textBox2.Margin = new System.Windows.Forms.Padding(4);
             this.textBox2.Name = "textBox2";
             this.textBox2.Size = new System.Drawing.Size(81, 22);
             this.textBox2.TabIndex = 1;
@@ -521,7 +522,7 @@ namespace lrpt_places1
             // chkShowCenterLine
             // 
             this.chkShowCenterLine.Location = new System.Drawing.Point(592, 421);
-            this.chkShowCenterLine.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.chkShowCenterLine.Margin = new System.Windows.Forms.Padding(4);
             this.chkShowCenterLine.Name = "chkShowCenterLine";
             this.chkShowCenterLine.Size = new System.Drawing.Size(161, 30);
             this.chkShowCenterLine.TabIndex = 13;
@@ -531,7 +532,7 @@ namespace lrpt_places1
             // numericUpDown1
             // 
             this.numericUpDown1.Location = new System.Drawing.Point(696, 389);
-            this.numericUpDown1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.numericUpDown1.Margin = new System.Windows.Forms.Padding(4);
             this.numericUpDown1.Name = "numericUpDown1";
             this.numericUpDown1.Size = new System.Drawing.Size(57, 22);
             this.numericUpDown1.TabIndex = 14;
@@ -554,7 +555,7 @@ namespace lrpt_places1
             // 
             this.button3.Enabled = false;
             this.button3.Location = new System.Drawing.Point(220, 406);
-            this.button3.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.button3.Margin = new System.Windows.Forms.Padding(4);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(177, 44);
             this.button3.TabIndex = 16;
@@ -577,9 +578,10 @@ namespace lrpt_places1
             this.Controls.Add(this.label1);
             this.Controls.Add(this.button1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "MainForm";
-            this.Text = "LRPT_places v1.08";
+            this.Text = "LRPT_places v1.09";
             this.groupBox3.ResumeLayout(false);
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
@@ -598,7 +600,7 @@ namespace lrpt_places1
 		private System.Windows.Forms.Label label12;
 		private System.Windows.Forms.NumericUpDown numericUpDown1;
 		private System.Windows.Forms.CheckBox chkShowCenterLine;
-		private System.Windows.Forms.CheckBox checkBox1;
+		private System.Windows.Forms.CheckBox chkAutoHorizShift;
 		private System.Windows.Forms.Label label11;
 		private System.Windows.Forms.TextBox textBox3;
 		private System.Windows.Forms.Label label10;
