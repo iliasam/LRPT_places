@@ -386,9 +386,10 @@ namespace lrpt_places1
 		void update_full_time()
 		{
             bool is_utc_time = false;
+            
 
-            if (chkMeteorM2_2.Checked)//meteor 2-2
-                is_utc_time = true;
+            //if (chkMeteorM2_2.Checked)//meteor 2-2
+            //    is_utc_time = true;
 
             if (use_table_time)
 			{
