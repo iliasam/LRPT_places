@@ -29,7 +29,7 @@ namespace lrpt_places1
 		/// <summary>
 		/// Satellite position for corresponding image line
 		/// </summary>
-		public Sat_geo_pos[] image_positions = new Sat_geo_pos[10000];
+		public Sat_geo_pos[] satellite_positions = new Sat_geo_pos[10000];
 		public time_struct[] time_info = new time_struct[10000];
 		int time_info_cnt  = 0;
 		public int points_cnt = 0;
@@ -85,12 +85,16 @@ namespace lrpt_places1
 			
 			return cur_sat_pos;
 		}
-		
 
-		/// <summary>
-		/// Calculate Lat/Long satellite positions at flight time
-		/// </summary>
-		public void CalculateSatellitePositions(DateTime start_time, double flight_duration, int point_num, bool use_timetable)
+
+        /// <summary>
+        /// Calculate Lat/Long satellite positions (projection to Earth) at flight time
+        /// </summary>
+        /// <param name="start_time"></param>
+        /// <param name="flight_duration"></param>
+        /// <param name="flight_points_num">Number of points during flight - Image height</param>
+        /// <param name="use_timetable"></param>
+        public void CalculateSatellitePositions(DateTime start_time, double flight_duration, int flight_points_num, bool use_timetable)
 		{
 			int i;
 			DateTime cur_time;
@@ -110,7 +114,7 @@ namespace lrpt_places1
 			TimeSpan time_increment = new TimeSpan(Convert.ToInt64(time_increment_d));
 			cur_time = cur_time.Add(new TimeSpan(Convert.ToInt64(time_increment_d/2)));
 			
-			for (i=0; i < point_num; i++)
+			for (i=0; i < flight_points_num; i++)
 			{
 				if (((i % 8) == 0) && use_timetable)
 				{
@@ -122,14 +126,14 @@ namespace lrpt_places1
 						cur_time = cur_time.Subtract(new TimeSpan(Convert.ToInt64(time_increment_d*9)));
 					}
 				}
-				image_positions[i] = FindSatGeoPos(cur_time);
+				satellite_positions[i] = FindSatGeoPos(cur_time);
 				cur_time = cur_time.Add(time_increment);
 
 			}
-			points_cnt = point_num;
-			System.Diagnostics.Debug.WriteLine("Number of calculated points: {0}\n", point_num);
+			points_cnt = flight_points_num;
+			System.Diagnostics.Debug.WriteLine("Number of calculated points: {0}\n", flight_points_num);
 			
-			if ((image_positions[0].Latitude - image_positions[point_num-1].Latitude) > 0)
+			if ((satellite_positions[0].Latitude - satellite_positions[flight_points_num-1].Latitude) > 0)
 			{
 				NtoS_fight = true;//flight "down"
 				System.Diagnostics.Debug.WriteLine("flight down (север-юг)\n");
@@ -140,23 +144,30 @@ namespace lrpt_places1
 				System.Diagnostics.Debug.WriteLine("flight up (юг-север)\n");
 			}
 		}
-		
-		/// <summary>
-		/// Find the best line in image for a given position
-		/// </summary>
-		public int FindBestLine2(double latitude, double longitude)
+
+        /// <summary>
+        /// Find the best line in image for a given mark position
+        /// </summary>
+        /// <param name="latitude"></param>
+        /// <param name="longitude"></param>
+        /// <returns>Return number or image line where distance was shortest</returns>
+        public int FindBestLine2(double latitude, double longitude)
 		{
 			int i;
-			double min_diff = 100000;
+			double min_diff_km = 100000;
 			int min_diff_line  = 0;
-			double diff = 0;
+			double diff_km = 0;
 			
-			for (i=0;i<points_cnt;i++)
+			for (i = 0; i < points_cnt; i++)
 			{
-				diff = Find_2pointsDistance(image_positions[i].Latitude,image_positions[i].Longitude,latitude,longitude);
-				if (diff < min_diff)
+                //Find distance between mark and stell. pos
+				diff_km = Find_2pointsDistance(
+                    satellite_positions[i].Latitude,satellite_positions[i].Longitude,
+                    latitude,longitude);
+
+				if (diff_km < min_diff_km)
 				{
-					min_diff = diff;
+					min_diff_km = diff_km;
 					min_diff_line = i;
 				}
 			}

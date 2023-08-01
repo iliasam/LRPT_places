@@ -35,10 +35,12 @@ namespace lrpt_places1
 		int font_size = 8;
 		string html_cross_color = "#000000";
 		string html_text_color  = "#000000";
+        int TimezoneHours = 3;//+3 - moscow
 
         // Horizontal shift used in auto mode
         int AutoHorShiftMeteorM2 = 30;
         int AutoHorShiftMeteorM2_2 = -4;
+        int AutoHorShiftMeteorM2_3 = -4;
 
         // Do not show not visible points
         bool FilterNotVisible = true;
@@ -49,23 +51,23 @@ namespace lrpt_places1
 		{
 			InitializeComponent();
 			CurImageWorker = new ImageWorkerClass();
-			CurTimeProc = new TimeProcClass();
+			
 			TLEWorker = new TLEWorkerClass();
 			KMLWorker = new KMLWorkerClass();
-			
-			full_start_time = new DateTime(1,1,1,0,0,0,0);
+            CurSatelliteCalc = new SatellitePosCalcClass();
+
+            full_start_time = new DateTime(1,1,1,0,0,0,0);
 			start_time = new DateTime(1,1,1,0,0,0,0);
-			start_date = new DateTime(2023,01,01,12,00,0,0);
+			start_date = new DateTime(2023,01,01,23,00,0,0);
 
             LoadConfigFromIniFile();
+            CurTimeProc = new TimeProcClass(TimezoneHours);
 
             string archive_path = Application.StartupPath + @"\Archive";
 			TLEWorker.ScanArchiveAndRename(archive_path);
             TLEWorker.CleanArchive(archive_path);
 
-            textBox1.Text = "11:15:16.572\r\n00:13:38.708";
-         	
-         	CurSatelliteCalc = new SatellitePosCalcClass();
+            txtCurrTimeManual.Text = "11:15:16.572\r\n00:13:38.708";
 
             string path = Application.StartupPath + @"\points1.kml";
 
@@ -78,7 +80,6 @@ namespace lrpt_places1
 
             KMLWorker.Load_KML(path);
          	SetFormControlls();
-
 		}
 		
 
@@ -101,23 +102,22 @@ namespace lrpt_places1
             UpdateProgramParam();
             UpdateFullTime();
 
-            if (cur_tle_path.Length > 5)
-            {
-                Tle cur_tle = TLEWorker.Load_TLE(cur_tle_path);
-                if (cur_tle == null)
-                {
-                    MessageBox.Show("Problem with loading TLE info.", "ERROR!", 0, System.Windows.Forms.MessageBoxIcon.Stop);
-                    return;
-                }
-                else
-                {
-                    CurSatelliteCalc.Load_TLE(cur_tle);
-                }
-            }
-            else
+            if (cur_tle_path.Length < 6)
             {
                 MessageBox.Show("Bad TLE path.", "ERROR!", 0, System.Windows.Forms.MessageBoxIcon.Stop);
                 return;
+            }
+
+            Tle cur_tle = TLEWorker.Load_TLE(cur_tle_path);
+            if (cur_tle == null)
+            {
+                MessageBox.Show("Problem with loading TLE info.", 
+                    "ERROR!", 0, System.Windows.Forms.MessageBoxIcon.Stop);
+                return;
+            }
+            else
+            {
+                CurSatelliteCalc.Load_TLE(cur_tle);
             }
 
             if (CurImageWorker.cur_image_height <= 0)
@@ -138,29 +138,19 @@ namespace lrpt_places1
                CurImageWorker.cur_image_height,
                use_table_time);
 
-            if (chkAutoHorizShift.Checked)//auto horizontal correction
-            {
-                int horizShiftValue = 0;//shift in pixels
-                if (meteor_code == TLEWorkerClass.SatelliteCode.METEOR_M2)
-                    horizShiftValue = AutoHorShiftMeteorM2;
-                else if (meteor_code == TLEWorkerClass.SatelliteCode.METEOR_M2_2)
-                    horizShiftValue = AutoHorShiftMeteorM2_2;
-
-                if (CurSatelliteCalc.NtoS_fight)
-                    image_horiz_shift_pix = -horizShiftValue;
-                else
-                    image_horiz_shift_pix = horizShiftValue;
-            }
-
             if (CurSatelliteCalc.NtoS_fight == false)
                 rotate_image = true;
 
-            CurImageWorker.LoadImage(CurImageWorker.cur_image_path, rotate_image);//истинная загрузка изображения
+            // Real image load
+            CurImageWorker.LoadImage(CurImageWorker.cur_image_path, rotate_image);
 
             if (chkShowCenterLine.Checked)
                 CurImageWorker.ImageDrawCenterLine(1);
 
+            //DRAWING CYCLE!
+
             int prev_percent = 0;
+            //Check every point from KML file
             for (i = 0; i < KMLWorker.geo_points_cnt; i++)
             {
                 int percent = i * 100 / KMLWorker.geo_points_cnt;
@@ -169,11 +159,7 @@ namespace lrpt_places1
                 longitude = KMLWorker.geo_points[i].Longitude;
                 point_name = KMLWorker.geo_points[i].Name;
 
-                if (point_name == "Москва")
-                {
-                    //point_name = "test";
-                }
-                DrawPos(latitude, longitude, point_name);
+                DrawMarkAtPos(latitude, longitude, point_name);
 
                 if (percent != prev_percent)//if percent value has changed
                 {
@@ -194,20 +180,20 @@ namespace lrpt_places1
         }
 
         /// <summary>
-        /// Draw geo point on image
+        /// Draw geo point on image, will not drawn if it is not wisible
         /// </summary>
         /// <param name="latitude"></param>
         /// <param name="longitude"></param>
         /// <param name="name"></param>
-        void DrawPos(double latitude, double longitude, string name)
+        void DrawMarkAtPos(double latitude, double longitude, string name)
 		{
 			int best_line = 0;
 			int x_pose_pix = 0;
 			int y_pose_pix = 0;
 			int x_shift = 0;
 			
-			best_line = CurSatelliteCalc.FindBestLine2(latitude,longitude);
-			x_shift = CalculateX_ShiftPos(best_line, latitude,longitude);
+			best_line = CurSatelliteCalc.FindBestLine2(latitude, longitude);
+			x_shift = CalculateX_ShiftPos(best_line, latitude, longitude);
 			
 			//int y_shift = Convert.ToInt32(Math.Sin(0.0698)*x_shift);
 			int y_shift = Convert.ToInt32(Math.Sin(0.07)*x_shift);
@@ -264,12 +250,11 @@ namespace lrpt_places1
 
         int CalculateX_ShiftPos(int line, double latitude, double longitude)
         {
-            Sat_geo_pos sat_pose = CurSatelliteCalc.image_positions[line];
+            Sat_geo_pos sat_pose = CurSatelliteCalc.satellite_positions[line];
             double dist = CurSatelliteCalc.Find_2pointsDistance(sat_pose.Latitude, sat_pose.Longitude, latitude, longitude);//km
 
             double angle_rad = CalculateArcAngleRad(dist, sat_pose.Altitude);
             double pixel_offset_d = angle_rad / 0.001225;//0.0012 - angular resolution of METEOR M2 //THIS IS WRONG, but working???
-                                                         //double pixel_offset_d = Math.Tan(angle_rad)/Math.Tan(0.0014);//0.0012 - angular resolution of METEOR M2
 
             //этот код не особо проверен!!!!!!!!
 
@@ -327,6 +312,25 @@ namespace lrpt_places1
                 meteor_code = TLEWorkerClass.SatelliteCode.METEOR_M2_2;
             else if (chkMeteorM2_0.Checked)
                 meteor_code = TLEWorkerClass.SatelliteCode.METEOR_M2;
+            else if (chkMeteorM2_3.Checked)
+                meteor_code = TLEWorkerClass.SatelliteCode.METEOR_M2_3;
+
+            if (chkAutoHorizShift.Checked)//auto horizontal correction
+            {
+                int horizShiftValue = 0;//shift in pixels
+                if (meteor_code == TLEWorkerClass.SatelliteCode.METEOR_M2)
+                    horizShiftValue = AutoHorShiftMeteorM2;
+                else if (meteor_code == TLEWorkerClass.SatelliteCode.METEOR_M2_2)
+                    horizShiftValue = AutoHorShiftMeteorM2_2;
+                else if (meteor_code == TLEWorkerClass.SatelliteCode.METEOR_M2_3)
+                    horizShiftValue = AutoHorShiftMeteorM2_3;
+
+                if (CurSatelliteCalc.NtoS_fight)
+                    image_horiz_shift_pix = -horizShiftValue;
+                else
+                    image_horiz_shift_pix = horizShiftValue;
+            }
+
             TLEWorker.SetMeteorCode(meteor_code);
 
             if (chkShowCenterLine.Checked)
@@ -344,7 +348,8 @@ namespace lrpt_places1
 
             if (use_table_time)
             {
-                full_start_time = CurTimeProc.CreateFull_UTC(start_date, CurSatelliteCalc.table_start_time, is_utc_time);
+                full_start_time = CurTimeProc.CreateFull_UTC(
+                    start_date, CurSatelliteCalc.table_start_time, is_utc_time);
                 fight_duration_s = CurSatelliteCalc.table_fight_duration;
             }
             else
@@ -378,6 +383,7 @@ namespace lrpt_places1
             draw_center_line = Convert.ToInt32(parser.GetSetting("GRAPHICS", "draw_center_line"));
             html_cross_color = parser.GetSetting("GRAPHICS", "cross_color");
             html_text_color = parser.GetSetting("GRAPHICS", "text_color");
+            TimezoneHours = Convert.ToInt32(parser.GetSetting("TIME", "timezone"));
 
             int filter_not_vis = Convert.ToInt32(parser.GetSetting("GRAPHICS", "filter_not_visible"));
             if (filter_not_vis == 1)
@@ -390,6 +396,7 @@ namespace lrpt_places1
 
             AutoHorShiftMeteorM2 = Convert.ToInt32(parser.GetSetting("SHIFT", "meteor_m_2"));
             AutoHorShiftMeteorM2_2 = Convert.ToInt32(parser.GetSetting("SHIFT", "meteor_m_2_2"));
+            AutoHorShiftMeteorM2_3 = Convert.ToInt32(parser.GetSetting("SHIFT", "meteor_m_2_3"));
         }
 
         /// <summary>
@@ -461,10 +468,12 @@ namespace lrpt_places1
 		//load time from MANUAL input
 		void btnManualTimeInputClick(object sender, EventArgs e)
 		{
-			int result = CurTimeProc.FillTimeFromString(textBox1.Text);
+			int result = CurTimeProc.FillTimeFromString(txtCurrTimeManual.Text);
 			if (result != 1)
 			{
-				MessageBox.Show("Wrong time/duration data","ERROR!",0,System.Windows.Forms.MessageBoxIcon.Stop);
+				MessageBox.Show(
+                    "Wrong time/duration data","ERROR!",0,
+                    System.Windows.Forms.MessageBoxIcon.Stop);
 			}
 			start_time = CurTimeProc.start_time;
 			use_table_time = false;
@@ -553,6 +562,11 @@ namespace lrpt_places1
         }
 
         private void ChkMeteorM2_2_CheckedChanged(object sender, EventArgs e)
+        {
+            UpdateFullTime();
+        }
+
+        private void chkMeteorM2_3_CheckedChanged(object sender, EventArgs e)
         {
             UpdateFullTime();
         }

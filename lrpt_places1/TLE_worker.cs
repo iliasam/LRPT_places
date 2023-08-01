@@ -11,6 +11,7 @@ namespace lrpt_places1
             METEOR_M1 = 1,
             METEOR_M2,
             METEOR_M2_2,
+            METEOR_M2_3,
         };
 
         public int cur_min_diff = 10000;
@@ -133,6 +134,20 @@ namespace lrpt_places1
                             return new_filename;
                         }
                     }
+                    else if (meteor_code == SatelliteCode.METEOR_M2_3)
+                    {
+                        if (line.Contains("M2 3"))
+                        {
+                            tle_line1 = sr.ReadLine();
+                            tle_line2 = sr.ReadLine();
+                            tle1 = new Tle(line, tle_line1, tle_line2);
+                            str_epoch = tle1.Epoch;
+                            str_epoch = RemoveFraction(str_epoch);
+                            new_filename = "archive_" + str_epoch + ".txt";
+                            sr.Close();
+                            return new_filename;
+                        }
+                    }
                 }
             }
 			//meteor not found
@@ -170,7 +185,7 @@ namespace lrpt_places1
 		}
 		
 		/// <summary>
-		/// Scan archive and find best TLE file by it name
+		/// Scan archive and find best TLE file by its name
 		/// </summary>
 		public string FindBest_TLE(string archive_path, DateTime image_date)
 		{
@@ -187,7 +202,7 @@ namespace lrpt_places1
 			
 			image_epoch = ConvertDateToEpoch(image_date);
 			
-			for (i=0;i<files_cnt;i++)
+			for (i = 0; i < files_cnt; i++)
 			{
 				cur_filename = Path.GetFileName(dirs[i]);
 				if (cur_filename.Contains("skip"))
@@ -213,7 +228,8 @@ namespace lrpt_places1
 		
 		public int ConvertDateToEpoch(DateTime start_date)
 		{
-			if (start_date.Year < 2002) {return 0;}
+			if (start_date.Year < 2002)
+             return 0;
 			Julian cur_julian = new Julian(start_date);
 			double epoch = (cur_julian.Date - 2451545.0);
 			
@@ -259,6 +275,17 @@ namespace lrpt_places1
                     else if (meteor_code == SatelliteCode.METEOR_M2_2)
                     {
                         if (line.Contains("M2 2"))
+                        {
+                            tle_line1 = sr.ReadLine();
+                            tle_line2 = sr.ReadLine();
+                            tle1 = new Tle(line, tle_line1, tle_line2);
+                            sr.Close();
+                            return tle1;
+                        }
+                    }
+                    else if (meteor_code == SatelliteCode.METEOR_M2_3)
+                    {
+                        if (line.Contains("M2 3"))
                         {
                             tle_line1 = sr.ReadLine();
                             tle_line2 = sr.ReadLine();

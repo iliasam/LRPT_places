@@ -6,12 +6,15 @@ namespace lrpt_places1
 	{
 		public DateTime start_time;//msk time (time only)
 		public double flight_duration;//in seconds
+
+        private int timezone_hours = 3;//+3 - Moscow
 		
-		public TimeProcClass()
+		public TimeProcClass(int timezone_h)
 		{
 			start_time = new DateTime(2000,1,1,0,0,0,0);
 			flight_duration = 0;
-		}
+            timezone_hours = timezone_h;
+        }
 
         /// <summary>
         /// Calculate start time ("start_time") and duration ("flight_duration")
@@ -30,15 +33,15 @@ namespace lrpt_places1
 			string line_duration = str_lines[1];
 			
 			int start_ms = 	Convert.ToInt32(line_start.Substring(line_start.Length - 3));
-			int duration_ms = 	Convert.ToInt32(line_duration.Substring(line_duration.Length - 3));
+			int duration_ms = Convert.ToInt32(line_duration.Substring(line_duration.Length - 3));
 			
 			start_time = new DateTime(1,1,1,Convert.ToInt32(line_start.Substring(0,2)),
 			                          Convert.ToInt32(line_start.Substring(3,2)),
 			                          Convert.ToInt32(line_start.Substring(6,2)),start_ms);
 			
 			flight_duration = Convert.ToDouble(duration_ms)*0.001;
-			flight_duration+= Convert.ToDouble(line_duration.Substring(6,2));//sec
-			flight_duration+= Convert.ToDouble(line_duration.Substring(3,2))*60;//min
+			flight_duration += Convert.ToDouble(line_duration.Substring(6,2));//sec
+			flight_duration += Convert.ToDouble(line_duration.Substring(3,2))*60;//min
 			
 			return 1;
 		}
@@ -60,7 +63,7 @@ namespace lrpt_places1
                 return datetime_result;//can not substruct from bad date
 
             if (is_utc_time == false)
-                datetime_result = datetime_result.Subtract(new TimeSpan(3,0,0));//get utc time
+                datetime_result = datetime_result.Subtract(new TimeSpan(timezone_hours, 0,0));//get utc time
 
 			return datetime_result;                                      
 		}
