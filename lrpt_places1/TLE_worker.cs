@@ -15,7 +15,7 @@ namespace lrpt_places1
 
         public int cur_min_diff = 10000;
 		public SatelliteCode meteor_code = SatelliteCode.METEOR_M2;
-        int archive_lenth_days = 10000;//lenth of the archive in days
+        int archive_lenth_days = 10000;//length of the archive in days
 
 
         public TLEWorkerClass()
@@ -25,7 +25,7 @@ namespace lrpt_places1
 		/// <summary>
 		/// Select Meteor's name to work with
 		/// </summary>
-		public void set_meteor_code(SatelliteCode code)
+		public void SetMeteorCode(SatelliteCode code)
 		{
 			meteor_code = code;
 		}
@@ -33,7 +33,7 @@ namespace lrpt_places1
 		/// <summary>
 		/// Scan TLE archive and rename files: "archive_XXXXX"
 		/// </summary>
-		public void scan_archive_and_rename(string archive_path)
+		public void ScanArchiveAndRename(string archive_path)
 		{
             if (Directory.Exists(archive_path) == false)
             {
@@ -59,7 +59,7 @@ namespace lrpt_places1
 				else
 				{
 					//this file should be analysed and renamed
-					new_filename = analyse_file(cur_filepath);
+					new_filename = AnalyseFile(cur_filepath);
 					new_filepath = archive_path + @"\" + new_filename;
 
                     // Такой файл уже есть в архиве, удаляем его
@@ -75,7 +75,7 @@ namespace lrpt_places1
 		/// <summary>
 		/// Analyse file for containing METEOR M2 TLE and create it's new name
 		/// </summary>
-		public string analyse_file(string file_path)
+		public string AnalyseFile(string file_path)
 		{
 			string new_filename = "";
 			string line;
@@ -97,7 +97,7 @@ namespace lrpt_places1
 						tle_line2 = sr.ReadLine();
 						tle1 = new Tle(line, tle_line1, tle_line2);
 						str_epoch = tle1.Epoch;
-						str_epoch = remove_fraction(str_epoch);
+						str_epoch = RemoveFraction(str_epoch);
 						new_filename = "archive_"+ str_epoch+ ".txt";
 						sr.Close();
 						return new_filename;
@@ -113,7 +113,7 @@ namespace lrpt_places1
                             tle_line2 = sr.ReadLine();
                             tle1 = new Tle(line, tle_line1, tle_line2);
                             str_epoch = tle1.Epoch;
-                            str_epoch = remove_fraction(str_epoch);
+                            str_epoch = RemoveFraction(str_epoch);
                             new_filename = "archive_" + str_epoch + ".txt";
                             sr.Close();
                             return new_filename;
@@ -127,7 +127,7 @@ namespace lrpt_places1
                             tle_line2 = sr.ReadLine();
                             tle1 = new Tle(line, tle_line1, tle_line2);
                             str_epoch = tle1.Epoch;
-                            str_epoch = remove_fraction(str_epoch);
+                            str_epoch = RemoveFraction(str_epoch);
                             new_filename = "archive_" + str_epoch + ".txt";
                             sr.Close();
                             return new_filename;
@@ -145,7 +145,7 @@ namespace lrpt_places1
 		}
 		
 		//remove fraction part from string
-		public string remove_fraction(string text)
+		public string RemoveFraction(string text)
 		{
 			string new_text = "";
 			int pos = text.IndexOf(".");
@@ -172,7 +172,7 @@ namespace lrpt_places1
 		/// <summary>
 		/// Scan archive and find best TLE file by it name
 		/// </summary>
-		public string find_best_tle(string archive_path, DateTime image_date)
+		public string FindBest_TLE(string archive_path, DateTime image_date)
 		{
 			string[] dirs = Directory.GetFiles(archive_path, "*.txt");
 			string cur_filename;
@@ -185,7 +185,7 @@ namespace lrpt_places1
 			int min_diff = 1000;
 			int best_pos = 0;
 			
-			image_epoch = convert_date_to_epoch(image_date);
+			image_epoch = ConvertDateToEpoch(image_date);
 			
 			for (i=0;i<files_cnt;i++)
 			{
@@ -211,7 +211,7 @@ namespace lrpt_places1
 			return best_tle_path;
 		}
 		
-		public int convert_date_to_epoch(DateTime start_date)
+		public int ConvertDateToEpoch(DateTime start_date)
 		{
 			if (start_date.Year < 2002) {return 0;}
 			Julian cur_julian = new Julian(start_date);
@@ -222,7 +222,7 @@ namespace lrpt_places1
 		
 		//open file "tle_path", find METEOR TLE
 		//return TLE for METEOR
-		public Tle load_tle(string tle_path)
+		public Tle Load_TLE(string tle_path)
 		{
 			StreamReader sr = new StreamReader(tle_path);
 			Tle tle1;
@@ -282,7 +282,7 @@ namespace lrpt_places1
             string[] dirs = Directory.GetFiles(archive_path, "*.txt");
             string cur_filename;
             int i;
-            int today_epoch = convert_date_to_epoch(DateTime.Now);
+            int today_epoch = ConvertDateToEpoch(DateTime.Now);
             int files_cnt = dirs.Length;
 
             for (i = 0; i < files_cnt; i++)

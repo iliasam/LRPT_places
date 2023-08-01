@@ -5,7 +5,6 @@ using System.IO;
 
 namespace lrpt_places1
 {
-
 	public struct Sat_geo_pos
 	{
 		public double Latitude;
@@ -21,14 +20,14 @@ namespace lrpt_places1
 	}
 	
    /// <summary>
-   /// Satellitte position calculator
+   /// Satellite position calculator
    /// </summary>
 	public class SatellitePosCalcClass
 	{
 		public Tle current_tle;
 		
 		/// <summary>
-		/// Satellite position for corresponging image line
+		/// Satellite position for corresponding image line
 		/// </summary>
 		public Sat_geo_pos[] image_positions = new Sat_geo_pos[10000];
 		public time_struct[] time_info = new time_struct[10000];
@@ -37,7 +36,11 @@ namespace lrpt_places1
 		
 		public DateTime table_start_time;
 		public double table_fight_duration;
-		public bool NtoS_fight = false;//north to south flight
+
+        /// <summary>
+        /// north to south flight flag
+        /// </summary>
+		public bool NtoS_fight = false;
 		
 		/// <summary>
 		/// Initialise Satellite position calculator
@@ -51,7 +54,7 @@ namespace lrpt_places1
 		/// Place current TLE in object memory
 		/// </summary>
 		/// <param name="tle">TLE object to load</param>
-		public void load_tle(Tle tle)
+		public void Load_TLE(Tle tle)
 		{
 			current_tle = tle;
 			System.Diagnostics.Debug.WriteLine("\n", tle.Name);
@@ -63,7 +66,7 @@ namespace lrpt_places1
 		/// Calculate Lat/Long for a certain time
 		/// </summary>
 		/// <param name="time">Time for calculation</param>
-		public Sat_geo_pos find_sat_geo_pos(DateTime time)
+		public Sat_geo_pos FindSatGeoPos(DateTime time)
 		{
 			Sat_geo_pos cur_sat_pos = new Sat_geo_pos();
 			Satellite sat = new Satellite(current_tle);
@@ -74,7 +77,10 @@ namespace lrpt_places1
 			cur_sat_pos.Latitude = sat_geo_pos.LatitudeDeg;
 			cur_sat_pos.Longitude = sat_geo_pos.LongitudeDeg;
 			
-			if (cur_sat_pos.Longitude > 180) {cur_sat_pos.Longitude = (-360+cur_sat_pos.Longitude);}
+			if (cur_sat_pos.Longitude > 180)
+            {
+                cur_sat_pos.Longitude = (-360+cur_sat_pos.Longitude);
+            }
 			cur_sat_pos.Altitude = sat_geo_pos.Altitude;
 			
 			return cur_sat_pos;
@@ -82,18 +88,18 @@ namespace lrpt_places1
 		
 
 		/// <summary>
-		/// Calculate Lat/Long satellite postions at flight time
+		/// Calculate Lat/Long satellite positions at flight time
 		/// </summary>
-		public void calculate_satellite_positions(DateTime start_time, double flight_duration,int point_num,bool use_timetable)
+		public void CalculateSatellitePositions(DateTime start_time, double flight_duration, int point_num, bool use_timetable)
 		{
 			int i;
 			DateTime cur_time;
-			double time_increment_d = 0.15412*10000000;//duration of one line in 100ns
+			double time_increment_d = 0.15412*10000000;//duration of one line is 100ns
 			int time_table_pos = 0;
 			
 			if (use_timetable) 
 			{
-				update_timetable(start_time);
+				UpdateTimetable(start_time);
 				cur_time = time_info[0].block_start;
 			}
 			else
@@ -101,16 +107,14 @@ namespace lrpt_places1
 				cur_time = start_time;
 			}
 			
-			
 			TimeSpan time_increment = new TimeSpan(Convert.ToInt64(time_increment_d));
-			
 			cur_time = cur_time.Add(new TimeSpan(Convert.ToInt64(time_increment_d/2)));
 			
-			for (i=0;i<point_num;i++)
+			for (i=0; i < point_num; i++)
 			{
 				if (((i % 8) == 0) && use_timetable)
 				{
-					time_table_pos = find_line_in_time_table(i);
+					time_table_pos = FindLineInTimeTable(i);
 					if (time_table_pos > -1)
 					{
 						//System.Diagnostics.Debug.WriteLine("i: {0}\n", i);
@@ -118,7 +122,7 @@ namespace lrpt_places1
 						cur_time = cur_time.Subtract(new TimeSpan(Convert.ToInt64(time_increment_d*9)));
 					}
 				}
-				image_positions[i] = find_sat_geo_pos(cur_time);
+				image_positions[i] = FindSatGeoPos(cur_time);
 				cur_time = cur_time.Add(time_increment);
 
 			}
@@ -138,9 +142,9 @@ namespace lrpt_places1
 		}
 		
 		/// <summary>
-		/// Find best line in image for given position
+		/// Find the best line in image for a given position
 		/// </summary>
-		public int find_best_line2(double latitude,double longitude)
+		public int FindBestLine2(double latitude, double longitude)
 		{
 			int i;
 			double min_diff = 100000;
@@ -149,7 +153,7 @@ namespace lrpt_places1
 			
 			for (i=0;i<points_cnt;i++)
 			{
-				diff = find_2points_distance(image_positions[i].Latitude,image_positions[i].Longitude,latitude,longitude);
+				diff = Find_2pointsDistance(image_positions[i].Latitude,image_positions[i].Longitude,latitude,longitude);
 				if (diff < min_diff)
 				{
 					min_diff = diff;
@@ -159,11 +163,16 @@ namespace lrpt_places1
 			
 			return min_diff_line;
 		}
-		
-		/// <summary>
-		/// Calculate distance between 2 points in kilometers
-		/// </summary>
-		public double find_2points_distance(double start_lat,double start_lon, double stop_lat,double stop_lon)
+
+        /// <summary>
+        /// Calculate distance between 2 points in kilometers
+        /// </summary>
+        /// <param name="start_lat">Point 1</param>
+        /// <param name="start_lon">Point 1</param>
+        /// <param name="stop_lat">Point 2</param>
+        /// <param name="stop_lon">Point 2</param>
+        /// <returns>Return istance value in km</returns>
+        public double Find_2pointsDistance(double start_lat, double start_lon,  double stop_lat, double stop_lon)
 		{
 			GeodeticCalculator geoCalc = new GeodeticCalculator();
 			Ellipsoid reference = Ellipsoid.WGS84;
@@ -179,22 +188,23 @@ namespace lrpt_places1
 		/// <summary>
 		/// Search for line in timetable containing y_pose
 		/// </summary>
-		public int find_line_in_time_table(int y_pose)
+		public int FindLineInTimeTable(int y_pose)
 		{
 			int i;
-			for (i=0;i<time_info_cnt;i++)
+			for (i=0; i < time_info_cnt; i++)
 			{
-				if (time_info[i].y_pose == y_pose) return i;
+				if (time_info[i].y_pose == y_pose)
+                    return i;
 			}
 			return -1;
 			
 		}
 		
-		public void load_time_table(string path)
+		public void LoadTimeTable(string path)
 		{
 			StreamReader sr3 = new StreamReader(path);
 			string line;
-			int i =0;
+			int i = 0;
 			int pos1 = 0;
 			int pos2 = 0;
 			string substr1;
@@ -247,7 +257,7 @@ namespace lrpt_places1
 		/// <summary>
 		/// Update timetable with new date value
 		/// </summary>
-		public void update_timetable(DateTime startdate)
+		public void UpdateTimetable(DateTime startdate)
 		{
 			int i;
 			DateTime tmp_datetime;
@@ -272,13 +282,8 @@ namespace lrpt_places1
 				{
 					time_info[i].block_start = tmp_datetime;
 				}
-					
-				
 			}
 		}
 		
-		
-		
-		
-	}
+	}//end of class
 }

@@ -3,8 +3,6 @@ using System.IO;
 using System.Drawing;
 using System.Drawing.Imaging;
 
-
-
 namespace lrpt_places1
 {
    /// <summary>
@@ -17,7 +15,7 @@ namespace lrpt_places1
 		public int cur_image_height;
 		public int cur_image_width;
 		public string cur_image_path;
-		public DateTime fileCreatedDate;
+		public DateTime file_created_date;
 		public bool image_loaded = false;
 		
 		public int image_type = 0;//0- raw, 1 - processor, smoothmet
@@ -30,12 +28,12 @@ namespace lrpt_places1
 			cur_image_width = 0;
 		}
 		
-		public void pre_load_image(string path)
+		public void PreLoadImage(string path)
 		{
-			Bitmap tempBitmap = (Bitmap)Image.FromFile(path);
-			cur_image_height = tempBitmap.Height;
-			cur_image_width = tempBitmap.Width;
-			fileCreatedDate = File.GetLastWriteTime(path);
+			Bitmap temp_bitmap = (Bitmap)Image.FromFile(path);
+			cur_image_height = temp_bitmap.Height;
+			cur_image_width = temp_bitmap.Width;
+			file_created_date = File.GetLastWriteTime(path);
 			cur_image_path = path;
 			
 			cur_image_name = Path.GetFileName(cur_image_path);
@@ -66,27 +64,27 @@ namespace lrpt_places1
 		/// <summary>
 		/// Load BMP image to memory
 		/// </summary>
-		public void load_image(string path, bool rotate)
+		public void LoadImage(string path, bool rotate)
 		{
 			if (cur_image != null) {cur_image.Dispose();}
 			if (cur_graphics != null) {cur_graphics.Dispose();}
 			
-			Bitmap originalBmp = (Bitmap)Image.FromFile(path);
-			Bitmap tempBitmap = new Bitmap(originalBmp.Width, originalBmp.Height);
+			Bitmap original_bmp = (Bitmap)Image.FromFile(path);
+			Bitmap temp_bitmap = new Bitmap(original_bmp.Width, original_bmp.Height);
 			
-			cur_image = tempBitmap;
+			cur_image = temp_bitmap;
 			cur_image_height = cur_image.Height;
 			cur_image_width = cur_image.Width;
 			cur_image_path = path;
 			
-			cur_graphics = Graphics.FromImage(tempBitmap);
+			cur_graphics = Graphics.FromImage(temp_bitmap);
 			if (rotate)
 			{	
 				cur_graphics.TranslateTransform(cur_image_width, cur_image_height);
 				cur_graphics.RotateTransform(180);
 			}
 
-			cur_graphics.DrawImage(originalBmp, 0, 0);
+			cur_graphics.DrawImage(original_bmp, 0, 0);
 			
 			if (rotate)
 			{	
@@ -98,27 +96,26 @@ namespace lrpt_places1
 			System.Diagnostics.Debug.WriteLine("Image height: {0}\n", cur_image_height);
 			System.Diagnostics.Debug.WriteLine("Image width: {0}\n", cur_image_width);
 			
-			fileCreatedDate = File.GetLastWriteTime(path);
-			System.Diagnostics.Debug.WriteLine("File loaded: " + fileCreatedDate);
+			file_created_date = File.GetLastWriteTime(path);
+			System.Diagnostics.Debug.WriteLine("File loaded: " + file_created_date);
 			image_loaded = true;
 		}
 		
 		/// <summary>
 		/// Draw a text on image
 		/// </summary>
-		public void image_draw_text(int x, int y, string text, string html_color, int font_size)
+		public void ImageDrawText(int x, int y, string text, string html_color, int font_size)
 		{
 
 			StringFormat drawFormat = new StringFormat();
 			System.Drawing.Color col = System.Drawing.ColorTranslator.FromHtml(html_color);
-			
 			cur_graphics.DrawString(text, new Font("Arial", font_size), new SolidBrush(col), x, y);
 		}
 		
 		/// <summary>
 		/// Draw a cross at current image
 		/// </summary>
-		public void image_draw_cross(int center_x, int center_y, int cross_width,int pen_width,string html_color)
+		public void ImageDrawCross(int center_x, int center_y, int cross_width, int pen_width, string html_color)
 		{
 			System.Drawing.Color col = System.Drawing.ColorTranslator.FromHtml(html_color);
 			Pen l_Pen = new Pen(new SolidBrush(col));
@@ -127,7 +124,7 @@ namespace lrpt_places1
 			cur_graphics.DrawLine(l_Pen,(center_x+cross_width/2),(center_y-cross_width/2),(center_x-cross_width/2),(center_y+cross_width/2));
 		}
 		
-		public void image_draw_center_line(int pen_width)
+		public void ImageDrawCenterLine(int pen_width)
 		{
 			Pen cur_pen = new Pen(Brushes.LightYellow);
 			cur_pen.Width = pen_width;
@@ -145,7 +142,7 @@ namespace lrpt_places1
 		/// <summary>
 		/// Save processed BMP image to disk
 		/// </summary>
-		public void save_image()
+		public void SaveImage()
 		{
 			string save_path;
 			string im_type = cur_image_path.Substring(cur_image_path.Length - 3,3);
@@ -186,7 +183,5 @@ namespace lrpt_places1
 					return codec;
 			return null;
 		}
-		
-		
-	}
+	}//end of class
 }

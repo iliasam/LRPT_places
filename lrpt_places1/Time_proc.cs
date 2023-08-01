@@ -12,11 +12,11 @@ namespace lrpt_places1
 			start_time = new DateTime(2000,1,1,0,0,0,0);
 			flight_duration = 0;
 		}
-		
-		/// <summary>
-		/// Calculate start time and duration and place it in class start_time variable
-		/// </summary>
-		public int fill_time_from_string(string str_time)
+
+        /// <summary>
+        /// Calculate start time ("start_time") and duration ("flight_duration")
+        /// </summary>
+        public int FillTimeFromString(string str_time)
 		{
 			string[] str_lines = str_time.Split('\n');
 			
@@ -46,7 +46,7 @@ namespace lrpt_places1
 		/// <summary>
 		/// Merge date and time values - 3 hours (msk)
 		/// </summary>
-		public DateTime create_full_utc(DateTime date, DateTime time, bool is_utc_time = false)
+		public DateTime CreateFull_UTC(DateTime date, DateTime time, bool is_utc_time = false)
 		{
 			DateTime datetime_result = new DateTime(date.Year,
 			                                        date.Month,
@@ -62,11 +62,8 @@ namespace lrpt_places1
             if (is_utc_time == false)
                 datetime_result = datetime_result.Subtract(new TimeSpan(3,0,0));//get utc time
 
-			return datetime_result;
-			                                        
-			                                        
+			return datetime_result;                                      
 		}
-		
-		
-	}
+
+	} //end of class
 }
