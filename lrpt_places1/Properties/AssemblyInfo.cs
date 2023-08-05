@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("LRPT_Places")]
-[assembly: AssemblyDescription("Ulitily for drawing cities at LRPT images")]
+[assembly: AssemblyDescription("Utility for drawing cities at LRPT images")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Iliasam")]
 [assembly: AssemblyProduct("LRPT_Places")]
@@ -28,6 +28,6 @@ using System.Runtime.InteropServices;
 //
 // You can specify all the values or you can use the default the Revision and 
 // Build Numbers by using the '*' as shown below:
-[assembly: AssemblyVersion("1.11.*")]
-[assembly: AssemblyFileVersion("1.11")]
+[assembly: AssemblyVersion("1.12.*")]
+[assembly: AssemblyFileVersion("1.12")]
 

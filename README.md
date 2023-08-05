@@ -6,6 +6,10 @@ This program was developed in 2015.
 See Wiki for more information: https://github.com/iliasam/LRPT_places/wiki  
   
 Versions:  
+v1.12 (05.08.2023)  
+Added PNG images support.  
+Added TLE loader (by "Men" to the distributive)  
+   
 v1.11 (01.08.2023)  
 Added meteor-2-3 support.  
 Added timezone configuration.  

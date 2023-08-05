@@ -74,6 +74,7 @@ namespace lrpt_places1
             this.txtCurrTimeManual = new System.Windows.Forms.TextBox();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.chkMeteorM2_3 = new System.Windows.Forms.RadioButton();
             this.chkMeteorM2_0 = new System.Windows.Forms.RadioButton();
             this.chkMeteorM2_2 = new System.Windows.Forms.RadioButton();
             this.lblTLE_DiffTime = new System.Windows.Forms.Label();
@@ -90,7 +91,6 @@ namespace lrpt_places1
             this.nudMarkSize = new System.Windows.Forms.NumericUpDown();
             this.label12 = new System.Windows.Forms.Label();
             this.btnAutoProcess = new System.Windows.Forms.Button();
-            this.chkMeteorM2_3 = new System.Windows.Forms.RadioButton();
             this.groupBox3.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -331,11 +331,11 @@ namespace lrpt_places1
             this.btnManualTimeInput.UseVisualStyleBackColor = true;
             this.btnManualTimeInput.Click += new System.EventHandler(this.btnManualTimeInputClick);
             // 
-            // textBox1
+            // txtCurrTimeManual
             // 
             this.txtCurrTimeManual.Location = new System.Drawing.Point(17, 32);
             this.txtCurrTimeManual.Multiline = true;
-            this.txtCurrTimeManual.Name = "textBox1";
+            this.txtCurrTimeManual.Name = "txtCurrTimeManual";
             this.txtCurrTimeManual.Size = new System.Drawing.Size(115, 55);
             this.txtCurrTimeManual.TabIndex = 0;
             // 
@@ -363,6 +363,16 @@ namespace lrpt_places1
             this.groupBox2.TabIndex = 15;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Satellite";
+            // 
+            // chkMeteorM2_3
+            // 
+            this.chkMeteorM2_3.Location = new System.Drawing.Point(16, 84);
+            this.chkMeteorM2_3.Name = "chkMeteorM2_3";
+            this.chkMeteorM2_3.Size = new System.Drawing.Size(104, 24);
+            this.chkMeteorM2_3.TabIndex = 2;
+            this.chkMeteorM2_3.Text = "METEOR-M2.3";
+            this.chkMeteorM2_3.UseVisualStyleBackColor = true;
+            this.chkMeteorM2_3.CheckedChanged += new System.EventHandler(this.chkMeteorM2_3_CheckedChanged);
             // 
             // chkMeteorM2_0
             // 
@@ -521,16 +531,6 @@ namespace lrpt_places1
             this.btnAutoProcess.UseVisualStyleBackColor = true;
             this.btnAutoProcess.Click += new System.EventHandler(this.btnAutoProcessClick);
             // 
-            // chkMeteorM2_3
-            // 
-            this.chkMeteorM2_3.Location = new System.Drawing.Point(16, 84);
-            this.chkMeteorM2_3.Name = "chkMeteorM2_3";
-            this.chkMeteorM2_3.Size = new System.Drawing.Size(104, 24);
-            this.chkMeteorM2_3.TabIndex = 2;
-            this.chkMeteorM2_3.Text = "METEOR-M2.3";
-            this.chkMeteorM2_3.UseVisualStyleBackColor = true;
-            this.chkMeteorM2_3.CheckedChanged += new System.EventHandler(this.chkMeteorM2_3_CheckedChanged);
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -548,7 +548,7 @@ namespace lrpt_places1
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MainForm";
-            this.Text = "LRPT_places v1.11";
+            this.Text = "LRPT_places v1.12";
             this.groupBox3.ResumeLayout(false);
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);

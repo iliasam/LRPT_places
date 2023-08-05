@@ -1,4 +1,6 @@
-﻿using System;
+﻿//By Iliaam, 2023
+
+using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Drawing;
@@ -435,7 +437,7 @@ namespace lrpt_places1
         void btnOpenImageClick(object sender, EventArgs e)
 		{
 			//image_path = "D:/METEOR_proc/MeteorEc.jpg";
-			openFileDialog1.Filter = "Image Files (*.BMP;*.JPG)|*.BMP;*.JPG;";
+			openFileDialog1.Filter = "Image Files (*.BMP;*.JPG;*.PNG)|*.BMP;*.JPG;*.PNG";
 			if(openFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
    			{
 				image_path = openFileDialog1.FileName;

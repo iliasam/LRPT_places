@@ -161,7 +161,17 @@ namespace lrpt_places1
 				
 				cur_image.Save(save_path, jpgEncoder, myEncoderParameters);
 			}
-			else
+            else if (im_type == "png")
+            {
+                ImageCodecInfo pngEncoder = GetEncoder(ImageFormat.Png);
+                System.Drawing.Imaging.Encoder myEncoder = System.Drawing.Imaging.Encoder.Quality;
+                EncoderParameters myEncoderParameters = new EncoderParameters(1);
+                EncoderParameter myEncoderParameter = new EncoderParameter(myEncoder, 100L);
+                myEncoderParameters.Param[0] = myEncoderParameter;
+
+                cur_image.Save(save_path, pngEncoder, myEncoderParameters);
+            }
+            else
 			{
 				//cur_image.Save(save_path);
 				cur_image.Save(save_path,ImageFormat.Bmp);
