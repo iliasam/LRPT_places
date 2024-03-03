@@ -91,6 +91,7 @@ namespace lrpt_places1
             this.nudMarkSize = new System.Windows.Forms.NumericUpDown();
             this.label12 = new System.Windows.Forms.Label();
             this.btnAutoProcess = new System.Windows.Forms.Button();
+            this.chkMeteorM2_4 = new System.Windows.Forms.RadioButton();
             this.groupBox3.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -354,12 +355,13 @@ namespace lrpt_places1
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.chkMeteorM2_4);
             this.groupBox2.Controls.Add(this.chkMeteorM2_3);
             this.groupBox2.Controls.Add(this.chkMeteorM2_0);
             this.groupBox2.Controls.Add(this.chkMeteorM2_2);
             this.groupBox2.Location = new System.Drawing.Point(385, 20);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(131, 117);
+            this.groupBox2.Size = new System.Drawing.Size(131, 147);
             this.groupBox2.TabIndex = 15;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Satellite";
@@ -370,7 +372,7 @@ namespace lrpt_places1
             this.chkMeteorM2_3.Name = "chkMeteorM2_3";
             this.chkMeteorM2_3.Size = new System.Drawing.Size(104, 24);
             this.chkMeteorM2_3.TabIndex = 2;
-            this.chkMeteorM2_3.Text = "METEOR-M2.3";
+            this.chkMeteorM2_3.Text = "METEOR M2-3";
             this.chkMeteorM2_3.UseVisualStyleBackColor = true;
             this.chkMeteorM2_3.CheckedChanged += new System.EventHandler(this.chkMeteorM2_3_CheckedChanged);
             // 
@@ -382,7 +384,7 @@ namespace lrpt_places1
             this.chkMeteorM2_0.Size = new System.Drawing.Size(104, 24);
             this.chkMeteorM2_0.TabIndex = 1;
             this.chkMeteorM2_0.TabStop = true;
-            this.chkMeteorM2_0.Text = "METEOR-M 2";
+            this.chkMeteorM2_0.Text = "METEOR M 2";
             this.chkMeteorM2_0.UseVisualStyleBackColor = true;
             this.chkMeteorM2_0.CheckedChanged += new System.EventHandler(this.chkMeteorM2_0_CheckedChanged);
             // 
@@ -392,7 +394,7 @@ namespace lrpt_places1
             this.chkMeteorM2_2.Name = "chkMeteorM2_2";
             this.chkMeteorM2_2.Size = new System.Drawing.Size(104, 24);
             this.chkMeteorM2_2.TabIndex = 0;
-            this.chkMeteorM2_2.Text = "METEOR-M2.2";
+            this.chkMeteorM2_2.Text = "METEOR M2-2";
             this.chkMeteorM2_2.UseVisualStyleBackColor = true;
             this.chkMeteorM2_2.CheckedChanged += new System.EventHandler(this.ChkMeteorM2_2_CheckedChanged);
             // 
@@ -531,6 +533,16 @@ namespace lrpt_places1
             this.btnAutoProcess.UseVisualStyleBackColor = true;
             this.btnAutoProcess.Click += new System.EventHandler(this.btnAutoProcessClick);
             // 
+            // chkMeteorM2_4
+            // 
+            this.chkMeteorM2_4.Location = new System.Drawing.Point(16, 114);
+            this.chkMeteorM2_4.Name = "chkMeteorM2_4";
+            this.chkMeteorM2_4.Size = new System.Drawing.Size(104, 24);
+            this.chkMeteorM2_4.TabIndex = 3;
+            this.chkMeteorM2_4.Text = "METEOR M2-4";
+            this.chkMeteorM2_4.UseVisualStyleBackColor = true;
+            this.chkMeteorM2_4.CheckedChanged += new System.EventHandler(this.chkMeteorM2_4_CheckedChanged);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -548,7 +560,7 @@ namespace lrpt_places1
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MainForm";
-            this.Text = "LRPT_places v1.12";
+            this.Text = "LRPT_places v1.13";
             this.groupBox3.ResumeLayout(false);
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
@@ -595,5 +607,6 @@ namespace lrpt_places1
 		private System.Windows.Forms.Button btnAutoProcess;
 		private System.Windows.Forms.Label lblImageName;
         private System.Windows.Forms.RadioButton chkMeteorM2_3;
+        private System.Windows.Forms.RadioButton chkMeteorM2_4;
     }
 }

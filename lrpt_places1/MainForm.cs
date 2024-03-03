@@ -43,6 +43,7 @@ namespace lrpt_places1
         int AutoHorShiftMeteorM2 = 30;
         int AutoHorShiftMeteorM2_2 = -4;
         int AutoHorShiftMeteorM2_3 = -4;
+        int AutoHorShiftMeteorM2_4 = -4;
 
         // Do not show not visible points
         bool FilterNotVisible = true;
@@ -316,6 +317,8 @@ namespace lrpt_places1
                 meteor_code = TLEWorkerClass.SatelliteCode.METEOR_M2;
             else if (chkMeteorM2_3.Checked)
                 meteor_code = TLEWorkerClass.SatelliteCode.METEOR_M2_3;
+            else if (chkMeteorM2_4.Checked)
+                meteor_code = TLEWorkerClass.SatelliteCode.METEOR_M2_4;
 
             if (chkAutoHorizShift.Checked)//auto horizontal correction
             {
@@ -326,6 +329,8 @@ namespace lrpt_places1
                     horizShiftValue = AutoHorShiftMeteorM2_2;
                 else if (meteor_code == TLEWorkerClass.SatelliteCode.METEOR_M2_3)
                     horizShiftValue = AutoHorShiftMeteorM2_3;
+                else if (meteor_code == TLEWorkerClass.SatelliteCode.METEOR_M2_4)
+                    horizShiftValue = AutoHorShiftMeteorM2_4;
 
                 if (CurSatelliteCalc.NtoS_fight)
                     image_horiz_shift_pix = -horizShiftValue;
@@ -399,6 +404,7 @@ namespace lrpt_places1
             AutoHorShiftMeteorM2 = Convert.ToInt32(parser.GetSetting("SHIFT", "meteor_m_2"));
             AutoHorShiftMeteorM2_2 = Convert.ToInt32(parser.GetSetting("SHIFT", "meteor_m_2_2"));
             AutoHorShiftMeteorM2_3 = Convert.ToInt32(parser.GetSetting("SHIFT", "meteor_m_2_3"));
+            AutoHorShiftMeteorM2_4 = Convert.ToInt32(parser.GetSetting("SHIFT", "meteor_m_2_4"));
         }
 
         /// <summary>
@@ -569,6 +575,11 @@ namespace lrpt_places1
         }
 
         private void chkMeteorM2_3_CheckedChanged(object sender, EventArgs e)
+        {
+            UpdateFullTime();
+        }
+
+        private void chkMeteorM2_4_CheckedChanged(object sender, EventArgs e)
         {
             UpdateFullTime();
         }

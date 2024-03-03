@@ -12,6 +12,7 @@ namespace lrpt_places1
             METEOR_M2,
             METEOR_M2_2,
             METEOR_M2_3,
+            METEOR_M2_4,
         };
 
         public int cur_min_diff = 10000;
@@ -137,6 +138,20 @@ namespace lrpt_places1
                     else if (meteor_code == SatelliteCode.METEOR_M2_3)
                     {
                         if (line.Contains("M2 3"))
+                        {
+                            tle_line1 = sr.ReadLine();
+                            tle_line2 = sr.ReadLine();
+                            tle1 = new Tle(line, tle_line1, tle_line2);
+                            str_epoch = tle1.Epoch;
+                            str_epoch = RemoveFraction(str_epoch);
+                            new_filename = "archive_" + str_epoch + ".txt";
+                            sr.Close();
+                            return new_filename;
+                        }
+                    }
+                    else if (meteor_code == SatelliteCode.METEOR_M2_4)
+                    {
+                        if (line.Contains("M2 4"))
                         {
                             tle_line1 = sr.ReadLine();
                             tle_line2 = sr.ReadLine();
@@ -286,6 +301,17 @@ namespace lrpt_places1
                     else if (meteor_code == SatelliteCode.METEOR_M2_3)
                     {
                         if (line.Contains("M2 3"))
+                        {
+                            tle_line1 = sr.ReadLine();
+                            tle_line2 = sr.ReadLine();
+                            tle1 = new Tle(line, tle_line1, tle_line2);
+                            sr.Close();
+                            return tle1;
+                        }
+                    }
+                    else if (meteor_code == SatelliteCode.METEOR_M2_4)
+                    {
+                        if (line.Contains("M2 4"))
                         {
                             tle_line1 = sr.ReadLine();
                             tle_line2 = sr.ReadLine();

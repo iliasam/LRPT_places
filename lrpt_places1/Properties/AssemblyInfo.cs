@@ -14,7 +14,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Iliasam")]
 [assembly: AssemblyProduct("LRPT_Places")]
-[assembly: AssemblyCopyright("Iliasam Copyright 2023")]
+[assembly: AssemblyCopyright("Iliasam Copyright 2024")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -28,6 +28,6 @@ using System.Runtime.InteropServices;
 //
 // You can specify all the values or you can use the default the Revision and 
 // Build Numbers by using the '*' as shown below:
-[assembly: AssemblyVersion("1.12.*")]
-[assembly: AssemblyFileVersion("1.12")]
+[assembly: AssemblyVersion("1.13.*")]
+[assembly: AssemblyFileVersion("1.13")]
 
